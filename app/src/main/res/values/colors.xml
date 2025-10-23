@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    //notificaciones
+    <color name="nt_background_activity">#8c8c8c</color>
+    <color name="nt_background_card">#ffe2df</color>
+    <color name="nt_background_btn">#D32F2F</color>
+
 </resources>
