@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">TuCarnetApp</string>
+    <string name="app_name">TuCarnetUFPS</string>
+    <string name="text_label_home_screen_1">¡Bienvenido a</string>
+    <string name="text_label_home_screen_2">TuCarnet\u00A0</string>
+    <string name="text_label_home_screen_3">UFPS!</string>
+    <string name="text_button_login_home_screen">Empecemos</string>
+    <string name="text_button_validate_home_screen">Validar Carnet</string>
 </resources>
