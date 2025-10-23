@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">TuCarnetApp</string>
+    <string name="logo_ufps">logo_ufps</string>
+
+    //notificaciones
+    <string name="regresar">Regresar</string>
+    <string name="nt_matricula_inactiva">Tu matrícula no se encuentra</string>
+    <string name="nt_matricula_estado">ACTIVA</string>
+    <string name="nt_scan_codigo">El código escaneado no es</string>
+    <string name="nt_scan_codigo_estado">VÁLIDO</string>
+    <string name="nt_password">Tu contraseña ha sido restablecida</string>
+    <string name="nt_password_estado">CORRECTAMENTE</string>
 </resources>
