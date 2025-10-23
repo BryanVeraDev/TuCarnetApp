@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/main"
+android:orientation="vertical"
+android:gravity="center"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+
+tools:context=".ui.home.HomeScreenActivity">
+
+<!--Imagen principal -->
+<ImageView
+    android:id="@+id/imgLogo"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:src="@drawable/init_logo"
+    android:layout_marginBottom="50dp" />
+
+
+<!-- Texto de bienvenida -->
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginBottom="40dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_label_home_screen_1"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        android:fontFamily="@font/poppins_semibold"
+        android:includeFontPadding="false"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_home_screen_2"
+            android:textColor="@android:color/black"
+            android:textSize="40sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:includeFontPadding="false"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_home_screen_3"
+            android:textColor="@color/ufps_red"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_semibold_italic"
+            android:includeFontPadding="false"
+            />
+    </LinearLayout>
+</LinearLayout>
+
+<!-- Boton -->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginHorizontal="50dp">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStart"
+        style="@style/HomeScreenStartButton"
+        android:layout_width="wrap_content"
+        android:minWidth="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_button_login_home_screen"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        app:icon="@drawable/login_icon"
+        app:iconPadding="8dp"
+        app:iconGravity="textStart"
+        app:iconSize="24dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnValidate"
+        style="@style/HomeScreenValidateButton"
+        android:layout_width="wrap_content"
+        android:minWidth="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_button_validate_home_screen"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        app:icon="@drawable/validate_icon"
+        app:iconPadding="8dp"
+        app:iconGravity="textStart"
+        app:iconSize="24dp"
+        app:iconTint="@null"/>
+
+
+</LinearLayout>
+
+</LinearLayout>
