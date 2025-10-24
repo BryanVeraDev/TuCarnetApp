@@ -1,29 +1,25 @@
 package com.example.tucarnetapp.ui.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
 
-class HomeScreenActivity : AppCompatActivity() {
-
-    lateinit var startButton: Button
+class LoadScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_screen)
+        setContentView(R.layout.activity_load_screen)
 
-        startButton = findViewById(R.id.btnStart)
-        startButton.setOnClickListener {
-            val intent = Intent(this, LoadScreenActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        val imageView = findViewById<ImageView>(R.id.imgLoadLogo)
+
+        val rotation = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_180)
+        imageView.startAnimation(rotation)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

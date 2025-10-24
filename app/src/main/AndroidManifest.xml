@@ -12,13 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TuCarnetApp">
         <activity
+            android:name=".ui.home.LoadScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.HomeScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.TuCarnetApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
