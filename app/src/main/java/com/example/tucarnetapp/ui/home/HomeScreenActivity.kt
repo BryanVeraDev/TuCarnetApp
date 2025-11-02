@@ -20,7 +20,8 @@ class HomeScreenActivity : AppCompatActivity() {
 
         startButton = findViewById(R.id.btnStart)
         startButton.setOnClickListener {
-            val intent = Intent(this, LoadScreenActivity::class.java)
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("open_section", "home")
             startActivity(intent)
             finish()
         }
