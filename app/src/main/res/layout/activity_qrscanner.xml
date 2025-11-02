@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".ui.home.QRScannerActivity">
+
+    <!-- Flecha atrás -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_back_icon"
+        android:background="@android:color/transparent"
+        android:layout_margin="16dp"
+        app:tint="@android:color/white" />
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Escanea tu código QR"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp" />
+
+    <!-- Vista del escáner -->
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/barcodeScannerView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:foregroundGravity="center"
+        android:background="@android:color/transparent" />
+
+
+
+    <!-- Botón linterna -->
+    <ImageButton
+        android:id="@+id/btnFlash"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/barcodeScannerView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/flashlight_icon"
+        android:background="@android:color/transparent"
+        app:tint="@android:color/white" />
+
+</RelativeLayout>

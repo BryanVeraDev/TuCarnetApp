@@ -10,8 +10,22 @@
 
     <color name="ufps_principal">#E53935</color>
     <color name="ufps_secundario">#3C8DBC</color>
+    <color name="ufps_complementario_principal">#FFAF3E</color>
+    <color name="ufps_complementario_claro">#FFE7C2</color>
+    <color name="ufps_texto_oscuro">#212121</color>
+    <color name="ufps_texto_principal">#999999</color>
+    <color name="ufps_texto_claro">#CCCCCC</color>
+    <color name="ufps_success_oscuro">#0E5100</color>
+    <color name="ufps_success_principal">#00A65A</color>
+    <color name="ufps_sucess_claro">#D8FFD0</color>
+    <color name="ufps_informacion_oscuro">#0097BC</color>
+    <color name="ufps_informacion_principal">#00C0EF</color>
+    <color name="ufps_informacion_claro">#D3E3FF</color>
+    <color name="ufps_error_oscuro">#410002</color>
+    <color name="ufps_error_principal">#BA1A1A</color>
+    <color name="ufps_error_claro">#FFDAD6</color>
     <color name="ufps_blanco_favorito">#FCFCFC</color>
     <color name="ufps_blanco_favorito_segundo">#E0E0E0</color>
-    <color name="ufps_texto_principal">#999999</color>
-    <color name="ufps_texto_oscuro">#212121</color>
+
+
 </resources>
