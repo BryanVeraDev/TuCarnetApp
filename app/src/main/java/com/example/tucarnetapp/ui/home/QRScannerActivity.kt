@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,9 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView
 class QRScannerActivity : AppCompatActivity() {
 
     private lateinit var barcodeView: DecoratedBarcodeView
+    private lateinit var flashlightButton: ImageButton
+    private lateinit var backButton: ImageButton
+    private var flashlightStatus: Boolean = false
     private val CAMERA_PERMISSION_CODE = 1001
     private val PREF_NAME = "app_permissions"
     private val KEY_CAMERA_REQUESTED = "camera_requested"
@@ -39,6 +44,9 @@ class QRScannerActivity : AppCompatActivity() {
         }
 
         barcodeView = findViewById(R.id.barcodeScannerView)
+        backButton = findViewById(R.id.btnBack)
+        flashlightButton = findViewById(R.id.btnFlash)
+
         barcodeView.statusView.visibility = View.GONE
 
         // 🔹 Si no tiene permiso, no dejar cargar la pantalla
@@ -46,6 +54,28 @@ class QRScannerActivity : AppCompatActivity() {
             checkCameraPermission()
         } else {
             startScanner()
+        }
+
+        backButton.setOnClickListener {
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        flashlightButton.setOnClickListener {
+            // ✅ Verificar si el dispositivo tiene flash antes de usarlo
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                flashlightStatus = !flashlightStatus
+                if (flashlightStatus) {
+                    barcodeView.setTorchOn()
+                    Toast.makeText(this, "Linterna encendida", Toast.LENGTH_SHORT).show()
+                } else {
+                    barcodeView.setTorchOff()
+                    Toast.makeText(this, "Linterna apagada", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Tu dispositivo no tiene flash", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
