@@ -57,11 +57,6 @@
                 android:scaleType="fitXY"
                 android:background="@android:color/transparent" />
         </FrameLayout>
-
-
-
-
-
         <!-- Botón linterna -->
         <ImageButton
             android:id="@+id/btnFlash"
