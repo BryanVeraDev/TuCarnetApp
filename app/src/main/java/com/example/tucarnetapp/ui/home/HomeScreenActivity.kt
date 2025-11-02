@@ -12,6 +12,7 @@ import com.example.tucarnetapp.R
 class HomeScreenActivity : AppCompatActivity() {
 
     lateinit var startButton: Button
+    lateinit var scannerButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +20,18 @@ class HomeScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home_screen)
 
         startButton = findViewById(R.id.btnStart)
+        scannerButton = findViewById(R.id.btnValidate)
+
         startButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             intent.putExtra("open_section", "home")
             startActivity(intent)
             finish()
+        }
+
+        scannerButton.setOnClickListener { 
+            val intent = Intent(this, QRScannerActivity::class.java)
+            startActivity(intent)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -12,4 +12,5 @@
     <string name="label_code">Código:</string>
     <string name="label_career">Carrera:</string>
     <string name="label_status">Estado:</string>
+    <string name="text_label_qr_scanner">Escanea tu código QR</string>
 </resources>
