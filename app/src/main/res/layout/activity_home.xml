@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,24 +5,69 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ufps_blanco_favorito"
     tools:context=".ui.home.HomeActivity">
 
+    <!-- Contenedor del contenido principal -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+    <!-- Barra de navegación personalizada -->
+    <LinearLayout
+        android:id="@+id/customNavBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:paddingHorizontal="50dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="40dp"
+        android:gravity="center"
+        android:weightSum="3"
         android:background="@drawable/border"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/selector_nav_color"
-        app:itemTextColor="@color/selector_nav_color"
-        app:labelVisibilityMode="unlabeled"
-        app:backgroundTint="@null" />
+        android:paddingVertical="8dp">
+
+        <!-- Botón Inicio -->
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/iconHome"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/home_icon"
+                app:tint="@color/ufps_texto_principal" />
+        </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <!-- Botón Usuarios -->
+        <LinearLayout
+            android:id="@+id/navCarnet"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless">
+
+            <ImageView
+                android:id="@+id/iconCarnet"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/carnet_icon"
+                app:tint="@color/ufps_texto_principal" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
