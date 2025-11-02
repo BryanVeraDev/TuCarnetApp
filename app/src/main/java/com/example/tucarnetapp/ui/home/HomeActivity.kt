@@ -1,14 +1,12 @@
 package com.example.tucarnetapp.ui.home
 
-import android.app.Fragment
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.ui.home.fragment.CarnetFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -31,7 +29,8 @@ class HomeActivity : AppCompatActivity() {
                 bottomNav.selectedItemId = R.id.nav_home
             }
             "carnet" ->{
-
+                replaceFragment(CarnetFragment())
+                bottomNav.selectedItemId = R.id.nav_carnet
             }
             else -> {
                 replaceFragment(HomeFragment())
@@ -42,6 +41,7 @@ class HomeActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId){
                 R.id.nav_home -> replaceFragment(HomeFragment())
+                R.id.nav_carnet -> replaceFragment(CarnetFragment())
             }
             true
 
@@ -56,6 +56,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun replaceFragment(fragment: androidx.fragment.app.Fragment){
         supportFragmentManager.beginTransaction()
+            .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .replace(R.id.fragmentContainer, fragment)
             .commit()
     }

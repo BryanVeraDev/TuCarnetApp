@@ -58,7 +58,7 @@
                         android:minHeight="30dp"
                         android:text="@string/text_button_edit_image"
                         android:textSize="14sp"
-                        app:icon="@drawable/scan_icon"
+                        app:icon="@drawable/camera_icon"
                         app:iconSize="16dp"
                          />
                 </LinearLayout>
@@ -167,7 +167,7 @@
                 <!-- Botones inferiores -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogout"
-                    style="@style/SecondaryWhiteButton"
+                    style="@style/PrincipalRedButton"
                     android:layout_width="wrap_content"
                     android:minWidth="300dp"
                     android:layout_height="wrap_content"
