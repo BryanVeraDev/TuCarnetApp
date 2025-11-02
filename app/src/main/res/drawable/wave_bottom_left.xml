@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="348dp"
+    android:height="100dp"
+    android:viewportWidth="348"
+    android:viewportHeight="100">
+
+    <!-- Primera onda superior - rojo principal - basada en el SVG de Figma -->
+    <path
+        android:pathData="M-25.5,68 L-9.625,52.167 C6.25,36.333 38,4.667 69.75,1.5 C101.5,-1.667 134.5,11 165,27.5 C195.5,44 224.75,75.167 256.5,62.5 C288.25,49.833 339.625,3.167 355.5,0 L355.5,100 L339.625,100 C323.75,100 292,100 260.25,100 C228.5,100 196.75,100 165,100 C133.25,100 101.5,100 69.75,100 C38,100 6.25,100 -9.625,100 L-25.5,100 L-25.5,68 Z"
+        android:fillColor="#E30613"/>
+</vector>
