@@ -1,0 +1,14 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Fondo blanco -->
+    <solid android:color="@android:color/white" />
+
+    <!-- Borde solo inferior, delgado -->
+    <stroke
+        android:width="0.5dp"
+        android:color="@color/ufps_texto_principal" />
+
+    <!-- Esto asegura que no tenga esquinas redondeadas -->
+    <corners android:radius="0dp" />
+</shape>

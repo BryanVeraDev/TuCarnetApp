@@ -3,6 +3,13 @@
     <string name="text_label_home_screen_1">¡Bienvenido a</string>
     <string name="text_label_home_screen_2">TuCarnet\u00A0</string>
     <string name="text_label_home_screen_3">UFPS!</string>
-    <string name="text_button_login_home_screen">Empecemos</string>
+    <string name="text_button_login_home_screen">Continua con Google</string>
     <string name="text_button_validate_home_screen">Validar Carnet</string>
+    <string name="text_button_edit_image">Editar</string>
+    <string name="text_button_logout">Cerrar sesión</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_name">Nombre:</string>
+    <string name="label_code">Código:</string>
+    <string name="label_career">Carrera:</string>
+    <string name="label_status">Estado:</string>
 </resources>

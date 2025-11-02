@@ -8,6 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="ufps_red">#E30613</color>
-    <color name="ufps_red_second">#F7A398</color>
+    <color name="ufps_principal">#E53935</color>
+    <color name="ufps_secundario">#3C8DBC</color>
+    <color name="ufps_blanco_favorito">#FCFCFC</color>
+    <color name="ufps_blanco_favorito_segundo">#E0E0E0</color>
+    <color name="ufps_texto_principal">#999999</color>
+    <color name="ufps_texto_oscuro">#212121</color>
 </resources>
