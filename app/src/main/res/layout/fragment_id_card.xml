@@ -78,8 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile_placeholder"
-                    tools:src="@tools:sample/avatars"/>
+                    android:src="@drawable/profile_example_image"/>
             </androidx.cardview.widget.CardView>
 
             <!-- Student Name -->
@@ -87,7 +86,7 @@
                 android:id="@+id/tvStudentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="JUAN DAVID\nRODRÍGUEZ CORDOBA"
+                tools:text="DUKAGJIN LIPA\nANESA REXHA"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
@@ -103,7 +102,7 @@
                 android:id="@+id/tvStudentCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CÓDIGO : 1152810"
+                tools:text="CÓDIGO : 1152810"
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:layout_marginTop="8dp"
@@ -116,7 +115,7 @@
                 android:id="@+id/tvStudentCC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CC : 1093123452"
+                tools:text="CC : 1093123452"
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:layout_marginTop="6dp"
@@ -129,14 +128,13 @@
                 android:id="@+id/tvStudentCarrera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CARRERA: Ing Sistemas"
+                tools:text="CARRERA: Ing Sistemas"
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:layout_marginTop="2dp"
                 app:layout_constraintTop_toBottomOf="@id/tvStudentCC"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-
 
             <!-- FrameLayout para contener todas las capas de ondas inferiores -->
             <FrameLayout
@@ -148,8 +146,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera"
-                >
+                app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera">
 
                 <!-- Onda superior izquierda (primera capa) -->
                 <ImageView
@@ -177,7 +174,7 @@
                     android:id="@+id/tvStudentType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ESTUDIANTE"
+                    tools:text="ESTUDIANTE"
                     android:textSize="19sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
@@ -232,4 +229,5 @@
             android:scaleType="fitCenter"
             android:src="@drawable/icon_recable_logo" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
