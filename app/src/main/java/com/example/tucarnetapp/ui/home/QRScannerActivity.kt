@@ -32,6 +32,12 @@ class QRScannerActivity : AppCompatActivity() {
     private val PREF_NAME = "app_permissions"
     private val KEY_CAMERA_REQUESTED = "camera_requested"
 
+    // Formato esperado del QR
+    private val QR_PREFIX = "UFPSCARNET:"
+
+    // Flag para evitar múltiples escaneos
+    private var isProcessing = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -116,12 +122,75 @@ class QRScannerActivity : AppCompatActivity() {
     private fun startScanner() {
         barcodeView.decodeContinuous(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult?) {
-                result?.text?.let { qr ->
-                    Log.d("QRScanner", "Código detectado: $qr")
+                result?.text?.let { qrContent ->
+                    // Evitar procesar múltiples veces el mismo código
+                    if (isProcessing) return
+
+                    Log.d("QRScanner", "QR detectado: $qrContent")
+
+                    // Validar que el QR tenga el formato correcto
+                    if (validateQRFormat(qrContent)) {
+                        isProcessing = true
+                        processValidQR(qrContent)
+                    } else {
+                        // Mostrar error si no tiene el formato correcto
+                        showInvalidFormatError()
+                    }
                 }
             }
         })
         barcodeView.resume()
+    }
+
+    /**
+     * Valida que el QR tenga el formato UFPSCARNET:codigo
+     */
+    private fun validateQRFormat(qrContent: String): Boolean {
+        return qrContent.startsWith(QR_PREFIX) &&
+                qrContent.length > QR_PREFIX.length
+    }
+
+    /**
+     * Extrae el código del estudiante del QR
+     * Formato: UFPSCARNET:1152669 → devuelve "1152669"
+     */
+    private fun extractStudentCode(qrContent: String): String {
+        return qrContent.removePrefix(QR_PREFIX).trim()
+    }
+
+    /**
+     * Procesa un QR válido y navega a la pantalla de validación
+     */
+    private fun processValidQR(qrContent: String) {
+        val studentCode = extractStudentCode(qrContent)
+
+        Log.d("QRScanner", "Código de estudiante extraído: $studentCode")
+
+        // Pausar el scanner
+        barcodeView.pause()
+
+        // Mostrar feedback al usuario
+        Toast.makeText(this, "Código detectado: $studentCode", Toast.LENGTH_SHORT).show()
+
+        // Navegar a la pantalla de validación
+        val intent = Intent(this, StudentProfileActivity::class.java)
+        intent.putExtra("STUDENT_CODE", studentCode)
+        startActivity(intent)
+
+        // Cerrar esta actividad
+        finish()
+    }
+
+    /**
+     * Muestra un error cuando el QR no tiene el formato correcto
+     */
+    private fun showInvalidFormatError() {
+        Toast.makeText(
+            this,
+            "⚠️ QR no válido. Debe ser un carnet UFPS",
+            Toast.LENGTH_SHORT
+        ).show()
+
     }
 
     override fun onRequestPermissionsResult(
