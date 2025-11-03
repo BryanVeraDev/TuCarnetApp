@@ -145,9 +145,15 @@ class StudentProfileActivity : AppCompatActivity() {
             setTextColor(resources.getColor(R.color.ufps_error_oscuro, null))
         }
 
-        // Ocultar información del estudiante
-        infoContainer.visibility = View.GONE
+        // Cargar datos del estudiante
+        textName.text = ""
+        textCode.text = ""
+        textCareer.text = ""
+        textStatus.text = ""
 
+        // Ocultar información del estudiante
+        //infoContainer.visibility = View.GONE
+        imgProfile.setImageResource(R.drawable.profile_blank)
         imgProfile.setBackgroundColor(resources.getColor(R.color.ufps_texto_principal,null))
     }
 
