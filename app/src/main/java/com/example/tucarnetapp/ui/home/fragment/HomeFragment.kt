@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.ui.home.HomeScreenActivity
+import com.google.android.material.snackbar.Snackbar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +26,7 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    lateinit var editButton: Button
     lateinit var logoutButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,12 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        editButton = view.findViewById(R.id.btnEdit)
         logoutButton = view.findViewById(R.id.btnLogout)
+
+        editButton.setOnClickListener {
+            checkPhotoStatus(boolean = false)
+        }
 
         logoutButton.setOnClickListener {
             val intent = Intent(requireContext(), HomeScreenActivity::class.java)
@@ -52,6 +59,31 @@ class HomeFragment : Fragment() {
 
         return view
     }
+
+    private fun checkPhotoStatus(boolean: Boolean) {
+
+        val rootView = requireView()
+
+        if (boolean) {
+            Snackbar.make(
+                rootView,
+                "Faltan días para cambiar tu foto.",
+                Snackbar.LENGTH_LONG
+            ).setBackgroundTint(resources.getColor(R.color.ufps_informacion_principal, null))
+                .setTextColor(resources.getColor(R.color.ufps_informacion_oscuro, null))
+                .show()
+        } else {
+            Snackbar.make(
+                rootView,
+                "Tu foto se ha enviado para validación.",
+                Snackbar.LENGTH_LONG
+            ).setBackgroundTint(resources.getColor(R.color.ufps_sucess_claro, null))
+                .setTextColor(resources.getColor(R.color.ufps_success_oscuro, null))
+                .show()
+        }
+    }
+
+
 
 
     companion object {
@@ -73,4 +105,6 @@ class HomeFragment : Fragment() {
                 }
             }
     }
+
+
 }
