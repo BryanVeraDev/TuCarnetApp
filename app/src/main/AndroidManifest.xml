@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TuCarnetApp">
         <activity
+            android:name=".ui.home.LoadingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.StudentProfileActivity"
             android:exported="false" />
         <activity

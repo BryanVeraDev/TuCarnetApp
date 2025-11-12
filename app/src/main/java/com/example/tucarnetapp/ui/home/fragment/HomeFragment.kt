@@ -2,6 +2,8 @@ package com.example.tucarnetapp.ui.home.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.ui.home.HomeScreenActivity
+import com.example.tucarnetapp.utils.showSnack
 import com.google.android.material.snackbar.Snackbar
+import com.example.tucarnetapp.utils.showSnack
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +32,7 @@ class HomeFragment : Fragment() {
 
     lateinit var editButton: Button
     lateinit var logoutButton: Button
+    lateinit var loadingOverlay: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +50,20 @@ class HomeFragment : Fragment() {
 
         editButton = view.findViewById(R.id.btnEdit)
         logoutButton = view.findViewById(R.id.btnLogout)
+        loadingOverlay = view.findViewById(R.id.loading_overlay)
 
         editButton.setOnClickListener {
-            checkPhotoStatus(boolean = false)
+            // Mostrar overlay (Para pruebas)
+            loadingOverlay.visibility = View.VISIBLE
+
+            // Ocultarlo después de unos segundos (solo prueba)
+            Handler(Looper.getMainLooper()).postDelayed({
+                loadingOverlay.visibility = View.GONE
+                // Simular que se ejecuta tu función
+                checkPhotoStatus(boolean = false)
+            }, 2000)
+
+
         }
 
         logoutButton.setOnClickListener {
@@ -69,7 +85,7 @@ class HomeFragment : Fragment() {
                 rootView,
                 "Faltan días para cambiar tu foto.",
                 Snackbar.LENGTH_LONG
-            ).setBackgroundTint(resources.getColor(R.color.ufps_informacion_principal, null))
+            ).setBackgroundTint(resources.getColor(R.color.ufps_informacion_claro, null))
                 .setTextColor(resources.getColor(R.color.ufps_informacion_oscuro, null))
                 .show()
         } else {
