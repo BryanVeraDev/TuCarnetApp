@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50374384171",
+    "project_id": "carnetapp-23f30",
+    "storage_bucket": "carnetapp-23f30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50374384171:android:18f5510c08d0054b70286e",
+        "android_client_info": {
+          "package_name": "com.example.tucarnetapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5-ag_fKb998LGDY8e0g1QwZrs8nF2YGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
