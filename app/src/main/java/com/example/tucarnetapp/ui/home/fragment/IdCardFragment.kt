@@ -1,6 +1,8 @@
 package com.example.tucarnetapp.ui.home.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.data.StudentData
+import com.example.tucarnetapp.utils.showSnack
+import com.google.android.material.snackbar.Snackbar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +62,17 @@ class IdCardFragment : Fragment() {
 
         // Cargar datos del estudiante
         loadStudentData()
+
+        // Mostrar snackbar al cargar el fragmento
+        Handler(Looper.getMainLooper()).post {
+            showSnack(
+                "Presiona el código QR para obtener el QR de tu perfil.",
+                duration = Snackbar.LENGTH_LONG,
+                top = true,
+                R.color.ufps_informacion_claro,
+                R.color.ufps_informacion_oscuro
+            )
+        }
     }
 
     private fun initViews(view: View) {

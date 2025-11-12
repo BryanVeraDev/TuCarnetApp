@@ -81,26 +81,12 @@ class HomeFragment : Fragment() {
         val rootView = requireView()
 
         if (boolean) {
-            Snackbar.make(
-                rootView,
-                "Faltan días para cambiar tu foto.",
-                Snackbar.LENGTH_LONG
-            ).setBackgroundTint(resources.getColor(R.color.ufps_informacion_claro, null))
-                .setTextColor(resources.getColor(R.color.ufps_informacion_oscuro, null))
-                .show()
+            showSnack("Faltan días para cambiar tu foto.", Snackbar.LENGTH_LONG, true, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
         } else {
-            Snackbar.make(
-                rootView,
-                "Tu foto se ha enviado para validación.",
-                Snackbar.LENGTH_LONG
-            ).setBackgroundTint(resources.getColor(R.color.ufps_sucess_claro, null))
-                .setTextColor(resources.getColor(R.color.ufps_success_oscuro, null))
-                .show()
+            showSnack("Tu foto se ha enviado para validación", Snackbar.LENGTH_LONG, true, R.color.ufps_sucess_claro, R.color.ufps_success_oscuro)
+
         }
     }
-
-
-
 
     companion object {
         /**
@@ -121,6 +107,4 @@ class HomeFragment : Fragment() {
                 }
             }
     }
-
-
 }
