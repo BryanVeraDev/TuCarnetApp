@@ -1,177 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/ufps_blanco_favorito">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/home_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ufps_blanco_favorito">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                >
 
-                <!-- Título -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/border"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="66dp"
-                    android:paddingVertical="20dp">
-
-                    <TextView
-                        android:id="@+id/tvGreeting"
-                        style="@style/TextTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="¡Hola!, Dua Lipa" />
-                </LinearLayout>
-
-                <!-- Imagen circular -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-
-                    <!-- Imagen de perfil -->
-                    <ImageView
-                        android:id="@+id/imgProfile"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
-                        android:background="@drawable/rounded_image"
-                        android:clipToOutline="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/profile_example_image" />
-
-                    <!-- Botón editar -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnEdit"
-                        style="@style/PrincipalBlueButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:minHeight="30dp"
-                        android:text="@string/text_button_edit_image"
-                        android:textSize="14sp"
-                        app:icon="@drawable/camera_icon"
-                        app:iconSize="16dp"
-                         />
-                </LinearLayout>
-
-                <!-- Información del estudiante -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingHorizontal="30dp"
-                    android:layout_marginTop="40dp"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
 
+                    <!-- Título -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/border"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="66dp"
+                        android:paddingVertical="20dp">
+
                         <TextView
+                            android:id="@+id/tvGreeting"
+                            style="@style/TextTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_name"
-                            style="@style/TextTitleLabel"/>
-                        <TextView
-                            android:id="@+id/textName"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text=" Dua Lipa"
-                            style="@style/TextGeneral" />
+                            android:gravity="center"
+                            android:text="¡Hola!, Dua Lipa" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="14dp"
-                        android:background="@color/ufps_texto_principal" />
+                    <!-- Imagen circular -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-                        <TextView
-                            android:layout_width="match_parent"
+                        <!-- Imagen de perfil -->
+                        <ImageView
+                            android:id="@+id/imgProfile"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:background="@drawable/rounded_image"
+                            android:clipToOutline="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/profile_example_image" />
+
+                        <!-- Botón editar -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEdit"
+                            style="@style/PrincipalBlueButton"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_code"
-                            style="@style/TextTitleLabel"/>
-                        <TextView
-                            android:id="@+id/textCode"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text=" 1152669"
-                            style="@style/TextGeneral" />
+                            android:layout_marginTop="10dp"
+                            android:minHeight="50dp"
+                            android:text="@string/text_button_edit_image"
+                            android:textSize="14sp"
+                            app:icon="@drawable/camera_icon"
+                            app:iconSize="18dp"
+                             />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="14dp"
-                        android:background="@color/ufps_texto_principal" />
+                    <!-- Información del estudiante -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_career"
-                            style="@style/TextTitleLabel"/>
-                        <TextView
-                            android:id="@+id/textCareer"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text=" Ingeniería de Sistemas"
-                            style="@style/TextGeneral" />
-                    </LinearLayout>
-                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="14dp"
-                        android:background="@color/ufps_texto_principal" />
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-                        <TextView
-                            android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="30dp"
+                        android:layout_marginTop="40dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_status"
-                            style="@style/TextTitleLabel"/>
-                        <TextView
-                            android:id="@+id/textStatus"
+                            android:orientation="horizontal"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_name"
+                                style="@style/TextTitleLabel"/>
+                            <TextView
+                                android:id="@+id/textName"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text=" Dua Lipa"
+                                style="@style/TextGeneral" />
+                        </LinearLayout>
+
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text=" Matriculado"
-                            style="@style/TextGeneral" />
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@color/ufps_texto_principal" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_code"
+                                style="@style/TextTitleLabel"/>
+                            <TextView
+                                android:id="@+id/textCode"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text=" 1152669"
+                                style="@style/TextGeneral" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@color/ufps_texto_principal" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_career"
+                                style="@style/TextTitleLabel"/>
+                            <TextView
+                                android:id="@+id/textCareer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text=" Ingeniería de Sistemas"
+                                style="@style/TextGeneral" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@color/ufps_texto_principal" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_status"
+                                style="@style/TextTitleLabel"/>
+                            <TextView
+                                android:id="@+id/textStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text=" Matriculado"
+                                style="@style/TextGeneral" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/ufps_texto_principal" />
+
                     </LinearLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/ufps_texto_principal" />
+
+                    <!-- Botones inferiores -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLogout"
+                        style="@style/PrincipalRedButton"
+                        android:layout_width="wrap_content"
+                        android:minWidth="300dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_button_logout"
+                        android:layout_marginTop="65dp" />
+
 
                 </LinearLayout>
 
-                <!-- Botones inferiores -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLogout"
-                    style="@style/PrincipalRedButton"
-                    android:layout_width="wrap_content"
-                    android:minWidth="300dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_button_logout"
-                    android:layout_marginTop="65dp" />
-            </LinearLayout>
-        </ScrollView>
+
+            </ScrollView>
+        <include layout="@layout/loading_overlay" />
+    </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,16 +28,24 @@ class HomeScreenActivity : AppCompatActivity() {
         scannerButton = findViewById(R.id.btnValidate)
 
         startButton.setOnClickListener {
+            val intent = Intent(this, LoadingActivity::class.java)
+            startActivity(intent)
+            finish() // cierra esta Activity (opcional)
+            /*
+            - Para probar que funciona el loading -
             val intent = Intent(this, HomeActivity::class.java)
             intent.putExtra("open_section", "home")
             startActivity(intent)
             finish()
+            */
+
         }
 
         scannerButton.setOnClickListener {
             val intent = Intent(this, QRScannerActivity::class.java)
             startActivity(intent)
         }
+
 
         // ✅ Manejo moderno del botón "atrás"
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
