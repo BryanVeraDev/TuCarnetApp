@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
-import com.example.tucarnetapp.ui.home.fragment.CarnetFragment
+import com.example.tucarnetapp.ui.home.fragment.IdCardFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
 
 class HomeActivity : AppCompatActivity() {
@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
         val sectionToOpen = intent.getStringExtra("open_section")
         when (sectionToOpen) {
             "carnet" -> {
-                replaceFragment(CarnetFragment())
+                replaceFragment(IdCardFragment())
                 highlightIcon(iconCarnet)
             }
             else -> {
@@ -51,7 +51,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         navCarnet.setOnClickListener {
-            replaceFragment(CarnetFragment())
+            replaceFragment(IdCardFragment())
             highlightIcon(iconCarnet)
             animateIcon(iconCarnet)
         }

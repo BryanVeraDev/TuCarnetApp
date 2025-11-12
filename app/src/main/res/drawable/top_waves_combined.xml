@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Primera elipse (rojo principal) -->
+    <item
+        android:top="-108dp"
+        android:left="-21dp"
+        android:right="-21dp"
+        android:width="400dp"
+        android:height="262dp"
+        android:gravity="top|center_horizontal">
+        <shape android:shape="oval">
+            <solid android:color="#E30613"/>
+            <size
+                android:width="400dp"
+                android:height="262dp"/>
+        </shape>
+    </item>
+
+    <!-- Segunda elipse (rojo oscuro) -->
+    <item
+        android:top="-136dp"
+        android:left="-21dp"
+        android:right="-21dp"
+        android:width="400dp"
+        android:height="262dp"
+        android:gravity="top|center_horizontal">
+        <shape android:shape="oval">
+            <solid android:color="#BC0017"/>
+            <size
+                android:width="400dp"
+                android:height="262dp"/>
+        </shape>
+    </item>
+
+</layer-list>
