@@ -5,19 +5,28 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.utils.showSnack
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.*
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
@@ -37,6 +46,8 @@ class QRScannerActivity : AppCompatActivity() {
 
     // Flag para evitar múltiples escaneos
     private var isProcessing = false
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,13 +85,17 @@ class QRScannerActivity : AppCompatActivity() {
                 flashlightStatus = !flashlightStatus
                 if (flashlightStatus) {
                     barcodeView.setTorchOn()
-                    Toast.makeText(this, "Linterna encendida", Toast.LENGTH_SHORT).show()
+                    flashlightButton.postDelayed({
+                        showSnack("Linterna encendida", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
+                    }, 150)
                 } else {
                     barcodeView.setTorchOff()
-                    Toast.makeText(this, "Linterna apagada", Toast.LENGTH_SHORT).show()
+                    flashlightButton.postDelayed({
+                        showSnack("Linterna apagada", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
+                    }, 150)
                 }
             } else {
-                Toast.makeText(this, "Tu dispositivo no tiene flash", Toast.LENGTH_SHORT).show()
+                showSnack("Tu dispositivo no tiene flash", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
             }
         }
     }
@@ -108,13 +123,11 @@ class QRScannerActivity : AppCompatActivity() {
 
             // ⚠️ Ya se negó → no mostrar escáner, cerrar Activity
             else -> {
-                Toast.makeText(
-                    this,
-                    "Debes habilitar el permiso de cámara desde Ajustes para poder escanear.",
-                    Toast.LENGTH_LONG
-                ).show()
-                openConfiguration()
-                finish() // 🔹 Cerrar la pantalla
+                showSnack("Debes habilitar el permiso de cámara desde Ajustes para poder escanear.", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    openConfiguration()
+                    finish()
+                }, 2000) // espera 2 segundos
             }
         }
     }
@@ -170,7 +183,7 @@ class QRScannerActivity : AppCompatActivity() {
         barcodeView.pause()
 
         // Mostrar feedback al usuario
-        Toast.makeText(this, "Código detectado: $studentCode", Toast.LENGTH_SHORT).show()
+        showSnack("Código detectado: $studentCode", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
 
         // Navegar a la pantalla de validación
         val intent = Intent(this, StudentProfileActivity::class.java)
@@ -185,12 +198,7 @@ class QRScannerActivity : AppCompatActivity() {
      * Muestra un error cuando el QR no tiene el formato correcto
      */
     private fun showInvalidFormatError() {
-        Toast.makeText(
-            this,
-            "⚠️ QR no válido. Debe ser un carnet UFPS",
-            Toast.LENGTH_SHORT
-        ).show()
-
+        showSnack("⚠️ QR no válido. Debe ser un carnet UFPS", Snackbar.LENGTH_SHORT, false, R.color.ufps_error_claro, R.color.ufps_error_principal)
     }
 
     override fun onRequestPermissionsResult(
@@ -205,12 +213,10 @@ class QRScannerActivity : AppCompatActivity() {
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startScanner()
             } else {
-                Toast.makeText(
-                    this,
-                    "Permiso de cámara denegado. No podrás escanear códigos.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish() // 🔹 Cierra la pantalla si no lo dio
+                showSnack("Permiso de cámara denegado. No podrás escanear códigos.", Snackbar.LENGTH_SHORT, false, R.color.ufps_error_claro, R.color.ufps_error_principal)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    finish()
+                }, 2000) // espera 2 segundos
             }
         }
     }
