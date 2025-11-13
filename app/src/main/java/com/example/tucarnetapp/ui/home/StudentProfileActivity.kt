@@ -117,7 +117,7 @@ class StudentProfileActivity : AppCompatActivity() {
         // Configurar mensaje de éxito
         textValidationMessage.apply {
             text = "✓ El estudiante pertenece a la UFPS"
-            setBackgroundColor(resources.getColor(R.color.ufps_sucess_claro, null))
+            setBackgroundColor(resources.getColor(R.color.ufps_success_claro, null))
             setTextColor(resources.getColor(R.color.ufps_success_oscuro, null))
         }
 
@@ -141,8 +141,8 @@ class StudentProfileActivity : AppCompatActivity() {
         // Configurar mensaje de error
         textValidationMessage.apply {
             text = "✗ El código escaneado no es válido"
-            setBackgroundColor(resources.getColor(R.color.ufps_error_principal, null))
-            setTextColor(resources.getColor(R.color.ufps_error_oscuro, null))
+            setBackgroundColor(resources.getColor(R.color.ufps_error_claro, null))
+            setTextColor(resources.getColor(R.color.ufps_error_principal, null))
         }
 
         // Cargar datos del estudiante

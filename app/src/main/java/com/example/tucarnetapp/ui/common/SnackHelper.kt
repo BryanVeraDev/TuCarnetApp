@@ -46,7 +46,7 @@ private fun showSnackInternal(
     textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
     textView.gravity = Gravity.CENTER
     textView.maxLines = 3
-    textView.typeface = ResourcesCompat.getFont(context, R.font.poppins_medium)
+    textView.typeface = ResourcesCompat.getFont(context, R.font.poppins_semibold)
 
     if (top) {
         val view = snack.view

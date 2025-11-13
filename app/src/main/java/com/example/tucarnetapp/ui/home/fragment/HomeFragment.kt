@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
         if (boolean) {
             showSnack("Faltan días para cambiar tu foto.", Snackbar.LENGTH_LONG, true, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
         } else {
-            showSnack("Tu foto se ha enviado para validación", Snackbar.LENGTH_LONG, true, R.color.ufps_sucess_claro, R.color.ufps_success_oscuro)
+            showSnack("Tu foto se ha enviado para validación", Snackbar.LENGTH_LONG, true, R.color.ufps_success_claro, R.color.ufps_success_oscuro)
 
         }
     }

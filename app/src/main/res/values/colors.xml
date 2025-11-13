@@ -17,7 +17,7 @@
     <color name="ufps_texto_claro">#CCCCCC</color>
     <color name="ufps_success_oscuro">#0E5100</color>
     <color name="ufps_success_principal">#00A65A</color>
-    <color name="ufps_sucess_claro">#D8FFD0</color>
+    <color name="ufps_success_claro">#D8FFD0</color>
     <color name="ufps_informacion_oscuro">#0097BC</color>
     <color name="ufps_informacion_principal">#00C0EF</color>
     <color name="ufps_informacion_claro">#D3E3FF</color>
@@ -26,6 +26,7 @@
     <color name="ufps_error_claro">#FFDAD6</color>
     <color name="ufps_blanco_favorito">#FCFCFC</color>
     <color name="ufps_blanco_favorito_segundo">#E0E0E0</color>
+    <color name="ufps_gris_principal">#F2F2F2</color>
 
 
 </resources>
