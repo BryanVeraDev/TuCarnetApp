@@ -2,13 +2,8 @@
     android:shape="rectangle">
 
     <!-- Fondo blanco -->
-    <solid android:color="@android:color/white" />
+    <solid android:color="@color/ufps_error_claro" />
 
-    <!-- Borde solo inferior, delgado -->
-    <stroke
-        android:width="0.5dp"
-        android:color="@color/ufps_texto_principal" />
 
-    <!-- Esto asegura que no tenga esquinas redondeadas -->
     <corners android:radius="0dp" />
 </shape>
