@@ -5,7 +5,7 @@
     <string name="text_label_home_screen_3">UFPS!</string>
     <string name="text_button_login_home_screen">Continua con Google</string>
     <string name="text_button_validate_home_screen">Validar Carnet</string>
-    <string name="text_button_edit_image">Editar</string>
+    <string name="text_button_edit_image">Editar foto</string>
     <string name="text_button_logout">Cerrar sesión</string>
     <string name="text_button_back">Regresar</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
