@@ -3,6 +3,7 @@ package com.example.tucarnetapp.ui.home
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,13 +12,16 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.ui.home.fragment.IdCardFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
+import org.w3c.dom.Text
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var navHome: LinearLayout
     private lateinit var navCarnet: LinearLayout
     private lateinit var iconHome: ImageView
+    private lateinit var textNavHome: TextView
     private lateinit var iconCarnet: ImageView
+    private lateinit var textNavCarnet: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +32,9 @@ class HomeActivity : AppCompatActivity() {
         navHome = findViewById(R.id.navHome)
         navCarnet = findViewById(R.id.navCarnet)
         iconHome = findViewById(R.id.iconHome)
+        textNavHome = findViewById(R.id.textNavHome)
         iconCarnet = findViewById(R.id.iconCarnet)
+        textNavCarnet = findViewById(R.id.textNavCarnet)
 
         // Fragment inicial según el intent
         val sectionToOpen = intent.getStringExtra("open_section")
@@ -57,7 +63,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         // Ajuste de padding para barras del sistema
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainActivityHome)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -72,14 +78,30 @@ class HomeActivity : AppCompatActivity() {
             .commit()
     }
 
-    /** Cambia el color del ícono seleccionado */
+    /** Cambia el color del ícono y del texto seleccionado */
     private fun highlightIcon(selectedIcon: ImageView) {
-        // Resetear colores
-        iconHome.setColorFilter(ContextCompat.getColor(this, R.color.ufps_texto_principal))
-        iconCarnet.setColorFilter(ContextCompat.getColor(this, R.color.ufps_texto_principal))
-        // Activar color UFPS al seleccionado
-        selectedIcon.setColorFilter(ContextCompat.getColor(this, R.color.ufps_principal))
+        val gray = ContextCompat.getColor(this, R.color.ufps_texto_principal)
+        val red = ContextCompat.getColor(this, R.color.ufps_principal)
+
+        // RESET (todos grises)
+        iconHome.setColorFilter(gray)
+        iconCarnet.setColorFilter(gray)
+        textNavHome.setTextColor(gray)
+        textNavCarnet.setTextColor(gray)
+
+        // ACTIVAR (icono + texto)
+        when (selectedIcon.id) {
+            R.id.iconHome -> {
+                iconHome.setColorFilter(red)
+                textNavHome.setTextColor(red)
+            }
+            R.id.iconCarnet -> {
+                iconCarnet.setColorFilter(red)
+                textNavCarnet.setTextColor(red)
+            }
+        }
     }
+
 
     /** Pequeña animación de toque */
     private fun animateIcon(icon: ImageView) {
