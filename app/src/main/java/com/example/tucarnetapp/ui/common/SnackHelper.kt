@@ -15,7 +15,7 @@ import com.example.tucarnetapp.R
 import com.google.android.material.snackbar.Snackbar
 
 // ---------------------------
-// 🚀 FUNCIÓN CENTRAL
+// Función central
 // ---------------------------
 private fun showSnackInternal(
     rootView: View,
@@ -26,54 +26,23 @@ private fun showSnackInternal(
     @ColorRes backgroundColor: Int,
     @ColorRes textColor: Int
 ) {
+    // -------------------------------------------------------------------------
+    // SI EXISTE UN SNACKBAR → DESCARTARLO PARA FORZAR CREACIÓN DE UNO NUEVO
+    // -------------------------------------------------------------------------
     val currentSnack = rootView.getTag(R.id.snackbar_tag) as? Snackbar
+    currentSnack?.dismiss()
 
     // -------------------------------------------------------------------------
-    // 🔁 SI YA EXISTE UN SNACKBAR visible → ACTUALIZARLO, NO CREAR OTRO
-    // -------------------------------------------------------------------------
-    if (currentSnack != null && currentSnack.isShown) {
-
-        // 🔄 Texto
-        currentSnack.setText(message)
-
-        // 🎨 Colores
-        currentSnack.setBackgroundTint(ContextCompat.getColor(context, backgroundColor))
-
-        val textView = currentSnack.view.findViewById<TextView>(
-            com.google.android.material.R.id.snackbar_text
-        )
-        textView.setTextColor(ContextCompat.getColor(context, textColor))
-
-        // 📍 Reposicionamiento si es top
-        if (top) {
-            val view = currentSnack.view
-            val params = view.layoutParams
-            when (params) {
-                is FrameLayout.LayoutParams -> {
-                    params.gravity = Gravity.TOP
-                    params.topMargin = 120
-                    view.layoutParams = params
-                }
-                is RelativeLayout.LayoutParams -> {
-                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-                    params.topMargin = 120
-                    view.layoutParams = params
-                }
-            }
-        }
-
-        return
-    }
-
-    // -------------------------------------------------------------------------
-    // ⚡ CREAR UN NUEVO SNACKBAR
+    // CREAR UN SNUEVO SNACKBAR (SE APLICA SIEMPRE)
     // -------------------------------------------------------------------------
     val snack = Snackbar.make(rootView, message, duration)
-    snack.setBackgroundTint(ContextCompat.getColor(context, backgroundColor))
-    snack.setTextColor(ContextCompat.getColor(context, textColor))
     snack.animationMode = Snackbar.ANIMATION_MODE_FADE
 
-    // Centrar texto
+    // Fondo y texto
+    snack.setBackgroundTint(ContextCompat.getColor(context, backgroundColor))
+    snack.setTextColor(ContextCompat.getColor(context, textColor))
+
+    // Centrar texto y aplicar fuente
     val textView = snack.view.findViewById<TextView>(
         com.google.android.material.R.id.snackbar_text
     )
@@ -82,10 +51,13 @@ private fun showSnackInternal(
     textView.maxLines = 3
     textView.typeface = ResourcesCompat.getFont(context, R.font.poppins_semibold)
 
-    // Posicionar arriba
+    // -------------------------------------------------------------------------
+    // ⬆ Posicionarlo ARRIBA si se pidió
+    // -------------------------------------------------------------------------
     if (top) {
         val view = snack.view
         val params = view.layoutParams
+
         when (params) {
             is FrameLayout.LayoutParams -> {
                 params.gravity = Gravity.TOP
@@ -100,9 +72,10 @@ private fun showSnackInternal(
         }
     }
 
-    // Guardar referencia
+    // Guardarlo para futuras referencias
     rootView.setTag(R.id.snackbar_tag, snack)
 
+    // Limpiar tag cuando desaparezca
     snack.addCallback(object : Snackbar.Callback() {
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             rootView.setTag(R.id.snackbar_tag, null)
@@ -113,7 +86,7 @@ private fun showSnackInternal(
 }
 
 // ---------------------------
-// 🚀 EXTENSIONES
+// EXTENSIONES
 // ---------------------------
 
 fun Activity.showSnack(
