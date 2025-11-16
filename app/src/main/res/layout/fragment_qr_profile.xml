@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ufps_blanco_favorito">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/LayoutAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="72dp"
+        android:background="@color/ufps_gris_principal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:title="Tu código QR"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextTitle"
+            app:navigationIcon="@drawable/arrow_back_black_icon"
+            />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:padding="24dp"
+        app:cardCornerRadius="35dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/LayoutAppBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/backgroundLogo"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <!-- Avatar del usuario -->
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_image"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_example_image" />
+
+            <!-- Nombre del usuario -->
+            <TextView
+                style="@style/TextTitle"
+                android:id="@+id/txtUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dua Lipa"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Imagen del QR -->
+            <ImageView
+                android:id="@+id/imgQr"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_marginBottom="12dp"
+                android:contentDescription="Código QR" />
+
+            <!-- Texto informativo -->
+            <TextView
+                style="@style/DefaultText"
+                android:id="@+id/txtInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_italic"
+                android:text="@string/text_share_qr_profile"
+                android:textColor="@color/ufps_texto_oscuro"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Marca -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_label_home_screen_2"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:includeFontPadding="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_label_home_screen_3"
+                    android:textColor="@color/ufps_principal"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins_semibold_italic"
+                    android:includeFontPadding="false" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- 🔴 LOGO ANCLADO AL FONDO (MARCA DE AGUA) -->
+    <ImageView
+        android:id="@+id/backgroundLogo"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/icon_recable_logo"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        layout="@layout/loading_overlay" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
