@@ -73,6 +73,20 @@ class IdCardFragment : Fragment() {
                 R.color.ufps_informacion_oscuro
             )
         }
+
+        ivQRCode.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    android.R.anim.fade_in,   // animación al entrar
+                    android.R.anim.fade_out,  // animación al salir
+                    android.R.anim.fade_in,   // animación al regresar (pop enter)
+                    android.R.anim.fade_out   // animación al regresar (pop exit)
+                )
+                .replace(R.id.fragmentContainer, QRProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
 
     private fun initViews(view: View) {
