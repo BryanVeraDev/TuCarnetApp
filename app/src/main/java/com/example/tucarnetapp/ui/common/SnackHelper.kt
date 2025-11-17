@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -16,7 +15,7 @@ import com.example.tucarnetapp.R
 import com.google.android.material.snackbar.Snackbar
 
 // ---------------------------
-// 🚀 FUNCIÓN CENTRAL (NO USAR DIRECTO)
+// Función central
 // ---------------------------
 private fun showSnackInternal(
     rootView: View,
@@ -27,19 +26,23 @@ private fun showSnackInternal(
     @ColorRes backgroundColor: Int,
     @ColorRes textColor: Int
 ) {
-    // Previene duplicados
+    // -------------------------------------------------------------------------
+    // SI EXISTE UN SNACKBAR → DESCARTARLO PARA FORZAR CREACIÓN DE UNO NUEVO
+    // -------------------------------------------------------------------------
     val currentSnack = rootView.getTag(R.id.snackbar_tag) as? Snackbar
-    if (currentSnack != null && currentSnack.isShown) {
-        currentSnack.setText(message)
-        return
-    }
+    currentSnack?.dismiss()
 
+    // -------------------------------------------------------------------------
+    // CREAR UN SNUEVO SNACKBAR (SE APLICA SIEMPRE)
+    // -------------------------------------------------------------------------
     val snack = Snackbar.make(rootView, message, duration)
-    snack.setBackgroundTint(ContextCompat.getColor(context, backgroundColor))
-    snack.setTextColor(ContextCompat.getColor(context, textColor))
     snack.animationMode = Snackbar.ANIMATION_MODE_FADE
 
-    // Centrar texto
+    // Fondo y texto
+    snack.setBackgroundTint(ContextCompat.getColor(context, backgroundColor))
+    snack.setTextColor(ContextCompat.getColor(context, textColor))
+
+    // Centrar texto y aplicar fuente
     val textView = snack.view.findViewById<TextView>(
         com.google.android.material.R.id.snackbar_text
     )
@@ -48,26 +51,31 @@ private fun showSnackInternal(
     textView.maxLines = 3
     textView.typeface = ResourcesCompat.getFont(context, R.font.poppins_semibold)
 
+    // -------------------------------------------------------------------------
+    // ⬆ Posicionarlo ARRIBA si se pidió
+    // -------------------------------------------------------------------------
     if (top) {
         val view = snack.view
         val params = view.layoutParams
+
         when (params) {
             is FrameLayout.LayoutParams -> {
                 params.gravity = Gravity.TOP
-                params.topMargin = 80
+                params.topMargin = 120
                 view.layoutParams = params
             }
             is RelativeLayout.LayoutParams -> {
                 params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-                params.topMargin = 80
+                params.topMargin = 120
                 view.layoutParams = params
             }
         }
     }
 
-    // Guardar referencia para evitar duplicados
+    // Guardarlo para futuras referencias
     rootView.setTag(R.id.snackbar_tag, snack)
 
+    // Limpiar tag cuando desaparezca
     snack.addCallback(object : Snackbar.Callback() {
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             rootView.setTag(R.id.snackbar_tag, null)
@@ -78,10 +86,9 @@ private fun showSnackInternal(
 }
 
 // ---------------------------
-// 🚀 EXTENSIONES UNIVERSALES
+// EXTENSIONES
 // ---------------------------
 
-// Activity
 fun Activity.showSnack(
     message: String,
     duration: Int = Snackbar.LENGTH_SHORT,
@@ -93,7 +100,6 @@ fun Activity.showSnack(
     showSnackInternal(rootView, this, message, duration, top, backgroundColor, textColor)
 }
 
-// Fragment
 fun Fragment.showSnack(
     message: String,
     duration: Int = Snackbar.LENGTH_SHORT,
@@ -106,7 +112,6 @@ fun Fragment.showSnack(
     showSnackInternal(rootView, activity, message, duration, top, backgroundColor, textColor)
 }
 
-// View (por si quieres mostrarlo desde un adapter)
 fun View.showSnack(
     message: String,
     duration: Int = Snackbar.LENGTH_SHORT,
@@ -117,7 +122,6 @@ fun View.showSnack(
     showSnackInternal(this, this.context, message, duration, top, backgroundColor, textColor)
 }
 
-// Context (último recurso)
 fun Context.showSnackFromContext(
     rootView: View,
     message: String,
