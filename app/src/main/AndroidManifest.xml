@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TuCarnetApp">
         <activity
+            android:name=".ui.terms.TermsConditionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.LoadingActivity"
             android:exported="false" />
         <activity
