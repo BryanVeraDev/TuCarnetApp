@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainActivityHome"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -45,6 +45,15 @@
                 android:layout_height="28dp"
                 android:src="@drawable/home_icon"
                 app:tint="@color/ufps_texto_principal" />
+            <TextView
+                android:id="@+id/textNavHome"
+                style="@style/TextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_nav_bar_home"
+                android:textSize="12sp"
+                android:textColor="@color/ufps_texto_principal"
+                android:paddingTop="2dp"/>
         </LinearLayout>
         <View
             android:layout_width="0dp"
@@ -68,6 +77,15 @@
                 android:layout_height="28dp"
                 android:src="@drawable/card_icon"
                 app:tint="@color/ufps_texto_principal" />
+            <TextView
+                android:id="@+id/textNavCarnet"
+                style="@style/TextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_nav_bar_carnet"
+                android:textSize="12sp"
+                android:textColor="@color/ufps_texto_principal"
+                android:paddingTop="2dp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

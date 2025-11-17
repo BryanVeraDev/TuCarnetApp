@@ -8,10 +8,14 @@
     <string name="text_button_edit_image">Editar foto</string>
     <string name="text_button_logout">Cerrar sesión</string>
     <string name="text_button_back">Regresar</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="label_name">Nombre:</string>
     <string name="label_code">Código:</string>
     <string name="label_career">Carrera:</string>
     <string name="label_status">Estado:</string>
     <string name="text_label_qr_scanner">Escanea tu código QR</string>
+    <string name="text_nav_bar_home">Inicio</string>
+    <string name="text_nav_bar_carnet">Carnet</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_share_qr_profile">Comparte tu código QR para verificar</string>
 </resources>
