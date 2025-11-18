@@ -33,7 +33,8 @@ fun TermsConditionsScreen(
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = {
+        contentWindowInsets = WindowInsets.safeDrawing,
+                bottomBar = {
             BottomBarButtons(
                 checked = checked,
                 onCancel = onCancel,
@@ -186,10 +187,20 @@ fun BottomBarButtons(
     onCancel: () -> Unit,
     onAccept: () -> Unit
 ) {
+    // 🔥 ESTE ES EL PADDING REAL DE LA NAVIGATION BAR
+    val bottomPadding = WindowInsets.navigationBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp),
+            .padding(
+                start = 20.dp,
+                end = 20.dp,
+                top = 20.dp,
+                bottom = 20.dp + bottomPadding   // 👈 AQUI LA MAGIA
+            ),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -204,7 +215,7 @@ fun BottomBarButtons(
             modifier = Modifier.weight(1f)
         ) {
             Text("Cancelar", fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp)
+                fontSize = 15.sp)
         }
 
         Spacer(Modifier.width(12.dp))
@@ -220,10 +231,11 @@ fun BottomBarButtons(
             modifier = Modifier.weight(1f)
         ) {
             Text("Tomar foto", fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp)
+                fontSize = 15.sp)
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

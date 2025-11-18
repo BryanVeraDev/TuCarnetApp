@@ -6,29 +6,47 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.tucarnetapp.R
-import com.example.tucarnetapp.ui.home.HomeActivity
+import androidx.compose.runtime.*
+import com.example.tucarnetapp.ui.liveness.FaceLivenessActivity
 import com.example.tucarnetapp.ui.theme.TuCarnetAppTheme
 import tu.paquete.ui.terms.TermsConditionsScreen
 
 class TermsConditionsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge()
+
         setContent {
+
             TuCarnetAppTheme {
-                TermsConditionsScreen (
+
+                // Estado que controla cuándo iniciar el Liveness
+                var startLiveness by remember { mutableStateOf(false) }
+
+                // Este efecto se ejecuta UNA VEZ cuando startLiveness cambia a true
+                if (startLiveness) {
+                    LaunchedEffect(Unit) {
+                        val intent = Intent(
+                            this@TermsConditionsActivity,
+                            FaceLivenessActivity::class.java
+                        )
+                        startActivity(intent)
+                        finish() // cerrar la pantalla actual
+                    }
+                }
+
+                // Pantalla de términos
+                TermsConditionsScreen(
                     onCancel = { finish() },
+
                     onAccept = {
-                        // Aquí navegas a tu activity de cámara:
-                        // startActivity(Intent(this, CameraActivity::class.java))
-                        startActivity(Intent(this, HomeActivity::class.java))
+                        // Solo cambiamos estado, NO lanzamos Activity desde Compose
+                        startLiveness = true
                     }
                 )
             }
         }
-
     }
 }
