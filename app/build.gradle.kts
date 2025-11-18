@@ -31,6 +31,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -54,12 +55,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation("com.google.android.material:material:1.14.0-alpha06")
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation(libs.firebase.auth)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation("com.google.android.material:material:1.14.0-alpha06")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,7 +72,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     // Optional - Add window size utils
     implementation("androidx.compose.material3.adaptive:adaptive")
-
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.11.0")
     // Optional - Integration with ViewModels
@@ -78,4 +80,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
     // Optional - Integration with RxJava
     implementation("androidx.compose.runtime:runtime-rxjava2")
+    // FaceLivenessDetector dependency
+    implementation("com.amplifyframework.ui:liveness:1.5.0")
+    // Support for Java 8 features
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

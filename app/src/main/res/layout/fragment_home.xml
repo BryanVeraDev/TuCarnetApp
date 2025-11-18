@@ -75,7 +75,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/text_button_edit_image"
-                        android:textSize="14sp"
                         app:icon="@drawable/camera_icon"
                         app:iconSize="18dp" />
                 </LinearLayout>
