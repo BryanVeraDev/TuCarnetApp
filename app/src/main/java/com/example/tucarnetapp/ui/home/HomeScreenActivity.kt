@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.ui.terms.TermsConditionsActivity
 
 class HomeScreenActivity : AppCompatActivity() {
 
@@ -28,9 +29,15 @@ class HomeScreenActivity : AppCompatActivity() {
         scannerButton = findViewById(R.id.btnValidate)
 
         startButton.setOnClickListener {
+
+            /*
+            - Probar con el loading activity -
             val intent = Intent(this, LoadingActivity::class.java)
+            intent.putExtra("next_destination", "home")
             startActivity(intent)
             finish() // cierra esta Activity (opcional)
+            */
+
             /*
             - Para probar que funciona el loading -
             val intent = Intent(this, HomeActivity::class.java)
@@ -38,6 +45,9 @@ class HomeScreenActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
             */
+
+            val intent = Intent(this, TermsConditionsActivity::class.java)
+            startActivity(intent)
 
         }
 
