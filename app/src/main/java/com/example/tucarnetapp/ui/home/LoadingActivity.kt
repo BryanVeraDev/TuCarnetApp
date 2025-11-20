@@ -16,12 +16,17 @@ class LoadingActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_loading)
 
+        /*
+
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, HomeActivity::class.java)
             intent.putExtra("open_section", "home")
             startActivity(intent)
             finish() // cierra la pantalla de carga
-        }, 3000) // 3 segundos de espera
+        }, 1000) // 3 segundos de espera
+
+        */
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

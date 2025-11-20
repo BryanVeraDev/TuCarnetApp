@@ -8,8 +8,11 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import tu.paquete.ui.theme.Poppins
+import androidx.compose.ui.text.TextStyle
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -33,6 +36,18 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+val AppTypography = Typography(
+    bodyLarge = TextStyle(fontFamily = Poppins),
+    bodyMedium = TextStyle(fontFamily = Poppins),
+    bodySmall = TextStyle(fontFamily = Poppins),
+    titleLarge = TextStyle(fontFamily = Poppins),
+    titleMedium = TextStyle(fontFamily = Poppins),
+    titleSmall = TextStyle(fontFamily = Poppins),
+    labelLarge = TextStyle(fontFamily = Poppins),
+    labelMedium = TextStyle(fontFamily = Poppins),
+    labelSmall = TextStyle(fontFamily = Poppins),
+)
+
 @Composable
 fun TuCarnetAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -52,7 +67,7 @@ fun TuCarnetAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }
