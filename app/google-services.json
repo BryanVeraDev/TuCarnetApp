@@ -12,7 +12,20 @@
           "package_name": "com.example.tucarnetapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "50374384171-ucan0t9d2trgm8rlp8u0c6edig63k1q6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tucarnetapp",
+            "certificate_hash": "12f835e2fbf02b7428986c1b1e056241bcea565b"
+          }
+        },
+        {
+          "client_id": "50374384171-qb82cj701phoks4j2m160sobpd9radqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC5-ag_fKb998LGDY8e0g1QwZrs8nF2YGg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50374384171-qb82cj701phoks4j2m160sobpd9radqr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
