@@ -1,18 +1,28 @@
 package com.example.tucarnetapp.ui.home.fragment
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.session.QRPreferences
+import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.data.StudentData
+import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.utils.showSnack
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,11 +42,14 @@ class IdCardFragment : Fragment() {
     // Views
     private lateinit var tvStudentName: TextView
     private lateinit var tvStudentCode: TextView
-    private lateinit var tvStudentCC: TextView
     private lateinit var tvStudentCarrera: TextView
     private lateinit var tvStudentType: TextView
     private lateinit var ivProfilePhoto: ImageView
     private lateinit var ivQRCode: ImageView
+
+    // Variable para almacenar el QR generado
+    // QR Preferences para persistencia
+    private lateinit var qrPrefs: QRPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +57,9 @@ class IdCardFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        // Inicializar QRPreferences
+        qrPrefs = QRPreferences.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -63,6 +79,9 @@ class IdCardFragment : Fragment() {
         // Cargar datos del estudiante
         loadStudentData()
 
+        // Generar QR desde la API
+        generateQRCode()
+
         // Mostrar snackbar al cargar el fragmento
         Handler(Looper.getMainLooper()).post {
             showSnack(
@@ -74,97 +93,219 @@ class IdCardFragment : Fragment() {
             )
         }
 
+        // Click listener para ver el QR en pantalla completa
         ivQRCode.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    android.R.anim.fade_in,   // animación al entrar
-                    android.R.anim.fade_out,  // animación al salir
-                    android.R.anim.fade_in,   // animación al regresar (pop enter)
-                    android.R.anim.fade_out   // animación al regresar (pop exit)
-                )
-                .replace(R.id.fragmentContainer, QRProfileFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+            // Obtener el QR desde QRPreferences
+            val qrBase64 = qrPrefs.getQRBase64()
 
+            if (qrBase64 != null) {
+                // Pasar el QR al fragmento de perfil
+                val bundle = Bundle().apply {
+                    putString("qr_image", qrBase64)
+                }
+                val qrProfileFragment = QRProfileFragment().apply {
+                    arguments = bundle
+                }
+
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    )
+                    .replace(R.id.fragmentContainer, qrProfileFragment)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                Toast.makeText(
+                    context,
+                    "No hay código QR disponible. Generando...",
+                    Toast.LENGTH_SHORT
+                ).show()
+                generateQRCode(silent = false)
+            }
+        }
     }
 
     private fun initViews(view: View) {
         tvStudentName = view.findViewById(R.id.tvStudentName)
         tvStudentCode = view.findViewById(R.id.tvStudentCode)
-        tvStudentCC = view.findViewById(R.id.tvStudentCC)
         tvStudentCarrera = view.findViewById(R.id.tvStudentCarrera)
         tvStudentType = view.findViewById(R.id.tvStudentType)
         ivProfilePhoto = view.findViewById(R.id.ivProfilePhoto)
         ivQRCode = view.findViewById(R.id.ivQRCode)
+        // Asegúrate de tener un ProgressBar en tu layout
+        // progressBar = view.findViewById(R.id.progressBar)
     }
 
     private fun loadStudentData() {
-        // Opción 1: Datos de prueba (temporal)
+        val sessionUser = UserSession.currentUser
+
+        if (sessionUser != null) {
+            // Ya tenemos datos en la sesión
+            updateUIFromSession(sessionUser)
+        } else {
+            // Si no hay sesión, cargar datos de respaldo
+            loadFallbackData()
+        }
+    }
+
+    /**
+     * Carga el QR desde SharedPreferences o lo genera si no existe/expiró
+     */
+    private fun loadOrGenerateQR() {
+        if (qrPrefs.isQRValid()) {
+            // Cargar QR desde SharedPreferences
+            loadQRFromPreferences()
+
+            // Si necesita renovación, regenerar en segundo plano
+            if (qrPrefs.needsRenewal()) {
+                generateQRCode(silent = true)
+            }
+        } else {
+            // No hay QR o expiró, generar nuevo
+            generateQRCode(silent = false)
+        }
+    }
+
+    /**
+     * Carga el QR desde SharedPreferences
+     */
+    private fun loadQRFromPreferences() {
+        val qrBitmap = qrPrefs.getQRBitmap()
+        if (qrBitmap != null) {
+            ivQRCode.setImageBitmap(qrBitmap)
+        }
+    }
+
+    private fun generateQRCode(silent: Boolean = false) {
+        val sessionUser = UserSession.currentUser
+
+        if (sessionUser?.student_code == null) {
+            if (!silent) {
+                Toast.makeText(context, "No se pudo obtener el código de estudiante", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        // Mostrar indicador de carga (opcional)
+        // progressBar?.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            try {
+                // Crear el DTO para generar el QR
+                val createQrDto = mapOf(
+                    "student_code" to sessionUser.student_code
+                )
+
+                // Llamar a la API para generar el QR
+                val response = ApiClient.qrApi.generateQr(createQrDto)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val qrResponse = response.body()!!
+                    //qrImageBase64 = qrResponse.qr
+
+                    // Convertir el base64 a Bitmap y mostrarlo
+                    val qrBitmap = base64ToBitmap(qrResponse.qr)
+                    if (qrBitmap != null) {
+                        ivQRCode.setImageBitmap(qrBitmap)
+
+                        // Guardar en SharedPreferences
+                        qrPrefs.saveQR(
+                            qrBase64 = qrResponse.qr,
+                            jwt = qrResponse.jwt,
+                            expiresIn = qrResponse.expiresIn,
+                            studentCode = sessionUser.student_code
+                        )
+
+                    } else {
+                        handleQRError("Error al procesar la imagen del QR")
+                    }
+                } else {
+                    if (!silent) {
+                        handleQRError("Error al generar el código QR: ${response.message()}")
+                    }
+                }
+            } catch (e: Exception) {
+                if (!silent) {
+                    handleQRError("Error de conexión: ${e.message}")
+                }
+            } finally {
+                // Ocultar indicador de carga
+                // progressBar?.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun updateUIFromSession(studentResponse: com.example.tucarnetapp.data.remote.dto.StudentResponse) {
+        val studentData = StudentData(
+            name = studentResponse.name ?: "N/A",
+            code = studentResponse.student_code ?: "N/A",
+            career = studentResponse.career ?: "N/A",
+            status = studentResponse.status ?: "N/A",
+            studentType = studentResponse.student_type ?: "ESTUDIANTE"
+        )
+        updateUI(studentData)
+
+        // Cargar foto de perfil si existe
+        studentResponse.card_photo_url?.let { photoUrl ->
+            // Si card_photo_url es una URL, usar Glide
+            // Si es base64, usar base64ToBitmap
+            if (photoUrl.startsWith("http")) {
+                Glide.with(this).load(photoUrl).into(ivProfilePhoto)
+            } else if (photoUrl.startsWith("data:image")) {
+                val photoBitmap = base64ToBitmap(photoUrl)
+                photoBitmap?.let { ivProfilePhoto.setImageBitmap(it) }
+            }
+        }
+    }
+
+    private fun loadFallbackData() {
         val studentData = StudentData(
             name = "OLIVIA ISABEL\nRODRIGO",
             code = "1152810",
-            documentId = "1093123452",
             career = "Ing Sistemas",
             status = "Matriculado",
             studentType = "ESTUDIANTE"
         )
-
         updateUI(studentData)
+    }
 
-        // Opción 2: Cargar desde API (descomentar cuando tengas la API lista)
-        /*
-        lifecycleScope.launch {
-            try {
-                val response = apiService.getStudentData("codigo_estudiante")
-                updateUI(response)
-            } catch (e: Exception) {
-                // Manejar error
-                Toast.makeText(context, "Error al cargar datos", Toast.LENGTH_SHORT).show()
-            }
-        }
-        */
+    private fun handleQRError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        // Puedes mostrar un placeholder o imagen de error en el QR
+        // ivQRCode.setImageResource(R.drawable.qr_error_placeholder)
     }
 
     private fun updateUI(data: StudentData) {
         tvStudentName.text = data.name
-        tvStudentCode.text = "CÓDIGO : ${data.code}"
-        tvStudentCC.text = "CC : ${data.documentId}"
+        tvStudentCode.text = "CÓDIGO: ${data.code}"
         tvStudentCarrera.text = "CARRERA: ${data.career}"
         tvStudentType.text = data.studentType
+    }
 
-        // Si tienes URLs de imágenes, cargarlas aquí
-        // Ejemplo con Glide:
-        /*
-        data.profileImageUrl?.let { url ->
-            Glide.with(this)
-                .load(url)
-                .placeholder(R.drawable.profile_example_image)
-                .error(R.drawable.profile_example_image)
-                .into(ivProfilePhoto)
-        }
+    private fun base64ToBitmap(base64: String): Bitmap? {
+        return try {
+            // Remover el prefijo data:image si existe
+            val pureBase64 = if (base64.contains("base64,")) {
+                base64.substringAfter("base64,")
+            } else {
+                base64
+            }
 
-        data.qrCodeUrl?.let { url ->
-            Glide.with(this)
-                .load(url)
-                .placeholder(R.drawable.qr_placeholder)
-                .into(ivQRCode)
+            val decodedBytes = Base64.decode(pureBase64, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
-        */
     }
 
     companion object {
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment IdCardFragment.
-         */
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             IdCardFragment().apply {
