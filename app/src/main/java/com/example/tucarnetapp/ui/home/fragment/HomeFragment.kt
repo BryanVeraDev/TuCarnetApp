@@ -9,102 +9,107 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.ui.home.HomeScreenActivity
-import com.example.tucarnetapp.utils.showSnack
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.appbar.MaterialToolbar
 import com.example.tucarnetapp.utils.showSnack
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     lateinit var editButton: Button
     lateinit var logoutButton: Button
     lateinit var loadingOverlay: View
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 1. Referenciar elementos UI
+        val topBar  = view.findViewById<MaterialToolbar>(R.id.topAppBar)
+        val tvName = view.findViewById<TextView>(R.id.textName)
+        val tvCode = view.findViewById<TextView>(R.id.textCode)
+        val tvCareer = view.findViewById<TextView>(R.id.textCareer)
+        val tvStatus = view.findViewById<TextView>(R.id.textStatus)
+        val imgProfile = view.findViewById<ImageView>(R.id.imgProfile)
 
         editButton = view.findViewById(R.id.btnEdit)
         logoutButton = view.findViewById(R.id.btnLogout)
         loadingOverlay = view.findViewById(R.id.loading_overlay)
 
+        // 2. Obtener el usuario en sesión
+        val user = UserSession.currentUser
+
+        if (user != null) {
+
+            // TopBar dinámico
+            val firstName = getFirstName(user.name)
+            val firstLastName = getFirstLastName(user.last_name)
+
+            topBar.title = "¡Hola, $firstName $firstLastName!"
+
+            // Llenar datos del estudiante
+            tvName.text = " ${user.name} ${user.last_name}"
+            tvCode.text = " ${user.student_code}"
+            tvCareer.text = " ${user.career}"
+            tvStatus.text = " ${user.status}"
+
+            // Cargar foto si existe
+            if (!user.card_photo_url.isNullOrBlank() && user.card_photo_url.startsWith("http")) {
+                Glide.with(requireContext())
+                    .load(user.card_photo_url)
+                    .placeholder(R.drawable.profile_example_image)
+                    .error(R.drawable.profile_example_image)
+                    .into(imgProfile)
+            } else {
+                imgProfile.setImageResource(R.drawable.profile_example_image)
+            }
+        }
+
+        // 3. Listeners de botones
         editButton.setOnClickListener {
-            // Mostrar overlay (Para pruebas)
             loadingOverlay.visibility = View.VISIBLE
 
-            // Ocultarlo después de unos segundos (solo prueba)
             Handler(Looper.getMainLooper()).postDelayed({
                 loadingOverlay.visibility = View.GONE
-                // Simular que se ejecuta tu función
                 checkPhotoStatus(boolean = false)
             }, 2000)
-
-
         }
 
         logoutButton.setOnClickListener {
             val intent = Intent(requireContext(), HomeScreenActivity::class.java)
             startActivity(intent)
-
             requireActivity().finish()
         }
-
-        return view
     }
 
     private fun checkPhotoStatus(boolean: Boolean) {
-
-        val rootView = requireView()
-
         if (boolean) {
-            showSnack("Faltan días para cambiar tu foto.", Snackbar.LENGTH_LONG, true, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
+            showSnack("Faltan días para cambiar tu foto.", Snackbar.LENGTH_LONG, true,
+                R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
         } else {
-            showSnack("Tu foto se ha enviado para validación", Snackbar.LENGTH_LONG, true, R.color.ufps_success_claro, R.color.ufps_success_oscuro)
-
+            showSnack("Tu foto se ha enviado para validación", Snackbar.LENGTH_LONG, true,
+                R.color.ufps_success_claro, R.color.ufps_success_oscuro)
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun getFirstName(fullName: String?): String {
+        if (fullName.isNullOrBlank()) return ""
+        return fullName.trim().split(" ").first()
+    }
+
+    fun getFirstLastName(fullLastName: String?): String {
+        if (fullLastName.isNullOrBlank()) return ""
+        return fullLastName.trim().split(" ").first()
     }
 }

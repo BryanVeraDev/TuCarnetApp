@@ -1,6 +1,9 @@
 package com.example.tucarnetapp.ui.home
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -8,9 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
 import com.google.android.material.button.MaterialButton
-import com.example.tucarnetapp.data.StudentData
 
 class StudentProfileActivity : AppCompatActivity() {
 
@@ -23,62 +26,13 @@ class StudentProfileActivity : AppCompatActivity() {
     private lateinit var btnLogout: MaterialButton
     private lateinit var infoContainer: View
 
-    // Lista estática de estudiantes para pruebas
-    private val mockStudents = listOf(
-        StudentData(
-            code = "1152669",
-            name = "Juan David Rodriguez Cordoba",
-            career = "Ingeniería de Sistemas",
-            status = "Matriculado",
-            documentId = "1152669",
-            profileImageUrl = null
-        ),
-        StudentData(
-            code = "1151234",
-            name = "María Fernanda García López",
-            career = "Ingeniería Industrial",
-            status = "Matriculado",
-            documentId = "1151234",
-            profileImageUrl = null
-        ),
-        StudentData(
-            code = "1159876",
-            name = "Carlos Andrés Pérez Ramírez",
-            career = "Ingeniería Electrónica",
-            status = "Activo",
-            documentId = "1159876",
-            profileImageUrl = null
-        ),
-        StudentData(
-            code = "1154567",
-            name = "Ana Sofía Martínez Torres",
-            career = "Ingeniería Civil",
-            status = "Matriculado",
-            documentId = "1154567",
-            profileImageUrl = null
-        ),
-        StudentData(
-            code = "1158901",
-            name = "Luis Eduardo Sánchez Díaz",
-            career = "Arquitectura",
-            status = "Inactivo",
-            documentId = "1158901",
-            profileImageUrl = null
-        )
-    )
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_student_profile)
         initViews()
 
-        // Obtener datos del Intent (código escaneado)
-        val studentCode = intent.getStringExtra("STUDENT_CODE")
-
-        // Validar estudiante
-        validateStudent(studentCode)
+        loadValidatedStudent()
 
         setupListeners()
     }
@@ -94,74 +48,154 @@ class StudentProfileActivity : AppCompatActivity() {
         infoContainer = findViewById(R.id.infoContainer)
     }
 
-    private fun validateStudent(code: String?) {
-        // Aquí harías la llamada a tu API o base de datos
-        // Por ahora simularé la validación
+    /**
+     * Carga los datos del estudiante validado desde el backend
+     */
+    private fun loadValidatedStudent() {
+        // Extraer datos del Intent
+        val isValidated = intent.getBooleanExtra("IS_VALIDATED", false)
 
-        if (code.isNullOrEmpty()) {
-            showInvalidStudent()
+        if (!isValidated) {
+            showInvalidStudent("No se recibieron datos de validación")
             return
         }
 
-        // Simular búsqueda de estudiante
-        val student = searchStudentByCode(code)
+        // Extraer datos del Intent
+        val studentCode = intent.getStringExtra("STUDENT_CODE") ?: ""
+        val name = intent.getStringExtra("STUDENT_NAME") ?: ""
+        val lastName = intent.getStringExtra("STUDENT_LAST_NAME") ?: ""
+        val email = intent.getStringExtra("STUDENT_EMAIL") ?: ""
+        val career = intent.getStringExtra("STUDENT_CAREER") ?: ""
+        val status = intent.getStringExtra("STUDENT_STATUS") ?: ""
+        val studentType = intent.getStringExtra("STUDENT_TYPE") ?: ""
+        val cardPhotoUrl = intent.getStringExtra("CARD_PHOTO_URL")
 
-        if (student != null) {
-            showValidStudent(student)
-        } else {
-            showInvalidStudent()
+        // Validar que tengamos los datos mínimos
+        if (studentCode.isNullOrEmpty() || name.isNullOrEmpty()) {
+            showInvalidStudent("Datos incompletos del estudiante")
+            return
         }
+
+        // Mostrar estudiante válido
+        showValidStudent(
+            studentCode = studentCode,
+            fullName = "$name ${lastName ?: ""}".trim(),
+            email = email,
+            career = career ?: "N/A",
+            status = status ?: "N/A",
+            studentType = studentType,
+            cardPhotoUrl = cardPhotoUrl
+        )
     }
 
-    private fun showValidStudent(student: StudentData) {
-        // Configurar mensaje de éxito
+
+    /**
+     * Muestra los datos de un estudiante válido
+     * @param isFromBackend true si viene de validación de QR, false si es mock data
+     */
+    private fun showValidStudent(
+        studentCode: String,
+        fullName: String,
+        email: String?,
+        career: String,
+        status: String,
+        studentType: String?,
+        cardPhotoUrl: String?
+    ) {
+        // Configurar mensaje de validación exitosa
         textValidationMessage.apply {
-            text = "✓ El estudiante pertenece a la UFPS"
+            text = "✓ Carnet validado exitosamente"
             setBackgroundColor(resources.getColor(R.color.ufps_success_claro, null))
             setTextColor(resources.getColor(R.color.ufps_success_oscuro, null))
+            visibility = View.VISIBLE
         }
 
         // Mostrar información del estudiante
         infoContainer.visibility = View.VISIBLE
 
         // Cargar datos del estudiante
-        textName.text = " ${student.name}"
-        textCode.text = " ${student.code}"
-        textCareer.text = " ${student.career}"
-        textStatus.text = " ${student.status}"
+        textName.text = " $fullName"
+        textCode.text = " $studentCode"
+        textCareer.text = " $career"
+        textStatus.text = " ${formatStatus(status)}"
 
         // Cargar imagen del estudiante
-        // Si tienes una URL de imagen:
-        // Glide.with(this).load(student.imageUrl).into(imgProfile)
-        // Por ahora usar imagen de ejemplo
-        imgProfile.setImageResource(R.drawable.profile_example_image)
+        if (!cardPhotoUrl.isNullOrEmpty()) {
+            if (cardPhotoUrl.startsWith("data:image")) {
+                // Cargar desde base64
+                val bitmap = base64ToBitmap(cardPhotoUrl)
+                if (bitmap != null) {
+                    imgProfile.setImageBitmap(bitmap)
+                } else {
+                    imgProfile.setImageResource(R.drawable.profile_blank)
+                }
+            } else if (cardPhotoUrl.startsWith("http")) {
+                // Cargar desde URL con Glide (si está disponible)
+                Glide.with(this).load(cardPhotoUrl).error(R.drawable.profile_blank).into(imgProfile)
+            } else {
+                imgProfile.setImageResource(R.drawable.profile_blank)
+            }
+        } else {
+            imgProfile.setImageResource(R.drawable.profile_blank)
+        }
     }
 
-    private fun showInvalidStudent() {
+    private fun showInvalidStudent(reason: String) {
         // Configurar mensaje de error
         textValidationMessage.apply {
-            text = "✗ El código escaneado no es válido"
+            text = "✗ Validación fallida: $reason"
             setBackgroundColor(resources.getColor(R.color.ufps_error_claro, null))
             setTextColor(resources.getColor(R.color.ufps_error_principal, null))
+            visibility = View.VISIBLE
         }
 
-        // Cargar datos del estudiante
-        textName.text = ""
-        textCode.text = ""
-        textCareer.text = ""
-        textStatus.text = ""
-
         // Ocultar información del estudiante
-        //infoContainer.visibility = View.GONE
+        infoContainer.visibility = View.GONE
+
+        // Mostrar imagen en blanco
         imgProfile.setImageResource(R.drawable.profile_blank)
-        imgProfile.setBackgroundColor(resources.getColor(R.color.ufps_texto_principal,null))
+        imgProfile.setBackgroundColor(resources.getColor(R.color.ufps_texto_principal, null))
     }
 
-    private fun searchStudentByCode(code: String): StudentData? {
-        // Aquí harías la llamada a tu API/Database
-        // Ejemplo de simulación:
-        // Buscar en la lista estática de estudiantes
-        return mockStudents.find { it.code == code }
+    /**
+     * Formatea el estado del estudiante
+     */
+    private fun formatStatus(status: String): String {
+        return when (status) {
+            "MATRICULADO" -> "Matriculado"
+            "NO_ACTIVO" -> "No Activo"
+            else -> status
+        }
+    }
+
+    /**
+     * Formatea el tipo de estudiante
+     */
+    private fun formatStudentType(type: String): String {
+        return when (type) {
+            "PREGRADO" -> "Pregrado"
+            "POSGRADO" -> "Posgrado"
+            else -> type
+        }
+    }
+
+    /**
+     * Convierte base64 a Bitmap
+     */
+    private fun base64ToBitmap(base64: String): Bitmap? {
+        return try {
+            val pureBase64 = if (base64.contains("base64,")) {
+                base64.substringAfter("base64,")
+            } else {
+                base64
+            }
+
+            val decodedBytes = Base64.decode(pureBase64, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun setupListeners() {
