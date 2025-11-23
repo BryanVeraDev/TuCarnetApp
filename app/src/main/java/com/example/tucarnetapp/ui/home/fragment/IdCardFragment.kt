@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,10 @@ import com.example.tucarnetapp.session.QRPreferences
 import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.data.StudentData
 import com.example.tucarnetapp.data.remote.ApiClient
+import com.example.tucarnetapp.viewmodel.QRViewModel
 import com.example.tucarnetapp.utils.showSnack
+import com.example.tucarnetapp.viewmodel.QRState
+import com.example.tucarnetapp.data.remote.dto.StudentResponse
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -46,6 +50,11 @@ class IdCardFragment : Fragment() {
     private lateinit var tvStudentType: TextView
     private lateinit var ivProfilePhoto: ImageView
     private lateinit var ivQRCode: ImageView
+    private lateinit var progressBar: View
+
+
+    // ViewModel
+    private val qrViewModel: QRViewModel by viewModels()
 
     // Variable para almacenar el QR generado
     // QR Preferences para persistencia
@@ -79,8 +88,18 @@ class IdCardFragment : Fragment() {
         // Cargar datos del estudiante
         loadStudentData()
 
+        //Ver estado del QR y renovarlo si es necesario
+        observeQRState()
+
+        //
+        setupClickListeners()
+
+        //
+        loadQRCode()
+
+
         // Generar QR desde la API
-        generateQRCode()
+        //generateQRCode()
 
         // Mostrar snackbar al cargar el fragmento
         Handler(Looper.getMainLooper()).post {
@@ -93,7 +112,7 @@ class IdCardFragment : Fragment() {
             )
         }
 
-        // Click listener para ver el QR en pantalla completa
+        /*// Click listener para ver el QR en pantalla completa
         ivQRCode.setOnClickListener {
             // Obtener el QR desde QRPreferences
             val qrBase64 = qrPrefs.getQRBase64()
@@ -125,7 +144,7 @@ class IdCardFragment : Fragment() {
                 ).show()
                 generateQRCode(silent = false)
             }
-        }
+        }*/
     }
 
     private fun initViews(view: View) {
@@ -135,8 +154,7 @@ class IdCardFragment : Fragment() {
         tvStudentType = view.findViewById(R.id.tvStudentType)
         ivProfilePhoto = view.findViewById(R.id.ivProfilePhoto)
         ivQRCode = view.findViewById(R.id.ivQRCode)
-        // Asegúrate de tener un ProgressBar en tu layout
-        // progressBar = view.findViewById(R.id.progressBar)
+        progressBar = view.findViewById(R.id.loading_overlay)
     }
 
     private fun loadStudentData() {
@@ -148,6 +166,102 @@ class IdCardFragment : Fragment() {
         } else {
             // Si no hay sesión, cargar datos de respaldo
             loadFallbackData()
+        }
+    }
+
+    private fun loadQRCode() {
+        val studentCode = UserSession.currentUser?.student_code
+
+        if (studentCode != null) {
+            qrViewModel.loadQR(studentCode)
+        } else {
+            showSnack(
+                "No se pudo obtener el código de estudiante",
+                duration = Snackbar.LENGTH_LONG
+            )
+        }
+    }
+
+    private fun observeQRState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            qrViewModel.qrState.collect { state ->
+                when (state) {
+                    is QRState.Initial -> {
+                        progressBar.visibility = View.GONE
+                    }
+
+                    is QRState.Loading -> {
+                        progressBar.visibility = View.VISIBLE
+                    }
+
+                    is QRState.Success -> {
+                        progressBar.visibility = View.GONE
+                        displayQR(state.qrBase64)
+
+                        // Mostrar mensaje si es un QR nuevo
+                        if (state.isNew) {
+                            showSnack(
+                                "Nuevo código QR generado",
+                                duration = Snackbar.LENGTH_SHORT
+                            )
+                        }
+                    }
+
+                    is QRState.Error -> {
+                        progressBar.visibility = View.GONE
+                        showSnack(
+                            state.message,
+                            duration = Snackbar.LENGTH_LONG
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun displayQR(base64: String) {
+        val qrBitmap = base64ToBitmap(base64)
+        if (qrBitmap != null) {
+            ivQRCode.setImageBitmap(qrBitmap)
+        }
+    }
+
+    private fun setupClickListeners() {
+        // Click en QR para verlo en pantalla completa
+        ivQRCode.setOnClickListener {
+            val qrBase64 = qrPrefs.getQRBase64()
+
+            if (qrBase64 != null) {
+                val bundle = Bundle().apply {
+                    putString("qr_image", qrBase64)
+                }
+                val qrProfileFragment = QRProfileFragment().apply {
+                    arguments = bundle
+                }
+
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    )
+                    .replace(R.id.fragmentContainer, qrProfileFragment)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                showSnack("Código QR no disponible")
+            }
+        }
+
+        // Long click para forzar renovación (opcional)
+        ivQRCode.setOnLongClickListener {
+            val studentCode = UserSession.currentUser?.student_code
+            if (studentCode != null) {
+                qrViewModel.forceRefresh(studentCode)
+                showSnack("Renovando código QR...", duration = Snackbar.LENGTH_SHORT)
+            }
+            true
         }
     }
 
@@ -238,9 +352,11 @@ class IdCardFragment : Fragment() {
         }
     }
 
-    private fun updateUIFromSession(studentResponse: com.example.tucarnetapp.data.remote.dto.StudentResponse) {
+    private fun updateUIFromSession(studentResponse: StudentResponse) {
+        val fullName = "${studentResponse.name} ${studentResponse.last_name}"
+
         val studentData = StudentData(
-            name = studentResponse.name ?: "N/A",
+            name = fullName ?: "N/A",
             code = studentResponse.student_code ?: "N/A",
             career = studentResponse.career ?: "N/A",
             status = studentResponse.status ?: "N/A",
@@ -251,7 +367,6 @@ class IdCardFragment : Fragment() {
         // Cargar foto de perfil si existe
         studentResponse.card_photo_url?.let { photoUrl ->
             // Si card_photo_url es una URL, usar Glide
-            // Si es base64, usar base64ToBitmap
             if (photoUrl.startsWith("http")) {
                 Glide.with(this).load(photoUrl).into(ivProfilePhoto)
             } else if (photoUrl.startsWith("data:image")) {

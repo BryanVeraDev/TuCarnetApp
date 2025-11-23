@@ -99,6 +99,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.compose.runtime:runtime-rxjava2")
+    implementation ("androidx.fragment:fragment-ktx:1.8.9")
 
     // ---- Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
