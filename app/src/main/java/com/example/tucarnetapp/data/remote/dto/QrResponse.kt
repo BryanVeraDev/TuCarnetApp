@@ -1,9 +1,10 @@
 package com.example.tucarnetapp.data.remote.dto
 
 data class QRResponse(
-    val qr: String,           // Base64 del QR (data:image/png;base64,...)
-    val expiresIn: Int,       // Tiempo de expiración en segundos (3600)
-    val jwt: String           // Token JWT generado
+    val qr: String,           // Base64 del QR
+    val expiresIn: Int,
+    val jwt: String,
+    val isNew: Boolean
 )
 data class StudentValidationData(
     val student_id: String,

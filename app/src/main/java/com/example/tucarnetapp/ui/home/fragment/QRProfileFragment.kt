@@ -13,13 +13,22 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.session.QRPreferences
 import com.example.tucarnetapp.session.UserSession
+import com.example.tucarnetapp.viewmodel.QRViewModel
 import com.example.tucarnetapp.utils.showSnack
+import com.example.tucarnetapp.viewmodel.QRState
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,9 +51,19 @@ class QRProfileFragment : Fragment() {
     private lateinit var imgProfile: ImageView
     private lateinit var txtUserName: TextView
     private lateinit var txtInfo: TextView
+    private lateinit var txtQRTimer: TextView
+    private lateinit var txtQRStatus: TextView
+    private lateinit var progressBar: View
 
+    // Data
     private var qrImageBase64: String? = null
     private lateinit var qrPrefs: QRPreferences
+
+    // ViewModel
+    private val qrViewModel: QRViewModel by viewModels()
+
+    // Timer
+    private var timerJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +93,12 @@ class QRProfileFragment : Fragment() {
 
         initViews(view)
 
+        setupAppBar()
+        loadQRCode()
+        loadStudentInfo()
+        observeQRState()
+        startTimer()
+        /*
         appBar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -82,7 +107,7 @@ class QRProfileFragment : Fragment() {
         loadQRCode()
 
         // Cargar información del estudiante
-        loadStudentInfo()
+        loadStudentInfo()*/
     }
 
     private fun initViews(view: View) {
@@ -91,6 +116,15 @@ class QRProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         txtUserName = view.findViewById(R.id.txtUserName)
         txtInfo = view.findViewById(R.id.txtInfo)
+        txtQRTimer = view.findViewById(R.id.txtQRTimer)
+        txtQRStatus = view.findViewById(R.id.txtQRStatus)
+        progressBar = view.findViewById(R.id.loading_overlay)
+    }
+
+    private fun setupAppBar() {
+        appBar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     /**
@@ -116,6 +150,153 @@ class QRProfileFragment : Fragment() {
             "No hay código QR disponible",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    /**
+     * Observa cambios en el estado del QR
+     */
+    private fun observeQRState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            qrViewModel.qrState.collect { state ->
+                when (state) {
+                    is QRState.Loading -> {
+                        progressBar.visibility = View.VISIBLE
+                        txtQRStatus.text = "Renovando código..."
+                        txtQRStatus.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                        )
+                    }
+
+                    is QRState.Success -> {
+                        progressBar.visibility = View.GONE
+                        displayQR(state.qrBase64)
+
+                        if (state.isNew) {
+                            showSnack(
+                                "✓ Código QR renovado correctamente",
+                                duration = Snackbar.LENGTH_SHORT,
+                                backgroundColor = R.color.ufps_success_claro,
+                                textColor = R.color.ufps_texto_oscuro
+                            )
+                            updateStatusBadge(valid = true, renewed = true)
+                        } else {
+                            updateStatusBadge(valid = true, renewed = false)
+                        }
+                    }
+
+                    is QRState.Error -> {
+                        progressBar.visibility = View.GONE
+                        updateStatusBadge(valid = false)
+                        showSnack(
+                            "Error: ${state.message}",
+                            duration = Snackbar.LENGTH_LONG
+                        )
+                    }
+
+                    else -> {
+                        progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Inicia el timer usando Coroutines
+     */
+    private fun startTimer() {
+        timerJob = viewLifecycleOwner.lifecycleScope.launch {
+            while (isActive) {
+                if (isAdded && context != null) {
+                    updateTimer()
+                }
+                delay(1000) // Actualizar cada segundo
+            }
+        }
+    }
+
+    /**
+     * Actualiza el timer y verifica si necesita renovación
+     */
+    private fun updateTimer() {
+        if (!isAdded || context == null) return
+
+        val timeRemaining = qrPrefs.getTimeRemaining()
+
+        when {
+            timeRemaining <= 0 -> {
+                txtQRTimer.text = "Renovando..."
+                txtQRTimer.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                )
+                updateStatusBadge(valid = false)
+
+                val studentCode = UserSession.currentUser?.student_code
+                if (studentCode != null && qrPrefs.hasQR()) {
+                    qrViewModel.forceRefresh(studentCode)
+                }
+            }
+
+            timeRemaining < 300 -> {
+                txtQRTimer.text = formatTime(timeRemaining)
+                txtQRTimer.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                )
+                updateStatusBadge(valid = true, warning = true)
+            }
+
+            else -> {
+                txtQRTimer.text = formatTime(timeRemaining)
+                txtQRTimer.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                )
+                updateStatusBadge(valid = true)
+            }
+        }
+    }
+
+    /**
+     * Actualiza el badge de estado del QR
+     */
+    private fun updateStatusBadge(valid: Boolean, warning: Boolean = false, renewed: Boolean = false) {
+
+        if (!isAdded || context == null) return
+
+        when {
+            !valid -> {
+                txtQRStatus.text = "⚠ Código expirado"
+                txtQRStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_principal)
+                )
+            }
+            renewed -> {
+                txtQRStatus.text = "✓ Código renovado"
+                txtQRStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                )
+            }
+            warning -> {
+                txtQRStatus.text = "⏱ Expira pronto"
+                txtQRStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.holo_orange_dark)
+                )
+            }
+            else -> {
+                txtQRStatus.text = "✓ Código válido"
+                txtQRStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
+                )
+            }
+        }
+    }
+
+    /**
+     * Formatea el tiempo restante en MM:SS
+     */
+    private fun formatTime(seconds: Long): String {
+        val minutes = seconds / 60
+        val secs = seconds % 60
+        return String.format("%02d:%02d", minutes, secs)
     }
 
     /**
@@ -185,12 +366,14 @@ class QRProfileFragment : Fragment() {
     }
 
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Cancelar el timer automáticamente
+        timerJob?.cancel()
+        timerJob = null
+    }
 
     companion object {
-        /**
-         * Crea una instancia del fragment con el QR en base64
-         * @param qrBase64 El código QR en formato base64
-         */
         @JvmStatic
         fun newInstance(qrBase64: String) =
             QRProfileFragment().apply {
