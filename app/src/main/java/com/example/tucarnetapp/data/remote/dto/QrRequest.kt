@@ -7,5 +7,3 @@ data class CreateQrDto(
 data class ValidateQrDto(
     val token: String
 )
-
-

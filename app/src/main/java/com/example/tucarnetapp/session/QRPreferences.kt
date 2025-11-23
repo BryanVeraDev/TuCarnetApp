@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import java.io.ByteArrayOutputStream
 
 /**
  * Gestiona la persistencia del QR usando SharedPreferences
@@ -24,6 +23,7 @@ class QRPreferences(context: Context) {
         private const val KEY_JWT = "qr_jwt"
         private const val KEY_EXPIRES_AT = "qr_expires_at"
         private const val KEY_STUDENT_CODE = "qr_student_code"
+        private const val KEY_CREATED_AT = "qr_created_at"
 
         @Volatile
         private var INSTANCE: QRPreferences? = null
@@ -46,12 +46,14 @@ class QRPreferences(context: Context) {
         expiresIn: Int,
         studentCode: String
     ) {
+        val now = System.currentTimeMillis()
         val expiresAt = System.currentTimeMillis() + (expiresIn * 1000L)
 
         prefs.edit().apply {
             putString(KEY_QR_BASE64, qrBase64)
             putString(KEY_JWT, jwt)
             putLong(KEY_EXPIRES_AT, expiresAt)
+            putLong(KEY_CREATED_AT, now)
             putString(KEY_STUDENT_CODE, studentCode)
             apply()
         }
@@ -126,6 +128,7 @@ class QRPreferences(context: Context) {
             remove(KEY_QR_BASE64)
             remove(KEY_JWT)
             remove(KEY_EXPIRES_AT)
+            remove(KEY_CREATED_AT)
             remove(KEY_STUDENT_CODE)
             apply()
         }
@@ -135,6 +138,11 @@ class QRPreferences(context: Context) {
      * Verifica si hay un QR guardado
      */
     fun hasQR(): Boolean = getQRBase64() != null
+
+    /**
+     * Obtiene cuándo se creó el QR (timestamp)
+     */
+    fun getCreatedAt(): Long = prefs.getLong(KEY_CREATED_AT, 0)
 
     // Helper para convertir base64 a Bitmap
     private fun base64ToBitmap(base64: String): Bitmap? {
