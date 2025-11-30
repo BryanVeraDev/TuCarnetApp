@@ -11,19 +11,32 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.util.Log
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.session.QRPreferences
+import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.ui.home.HomeScreenActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.appbar.MaterialToolbar
 import com.example.tucarnetapp.utils.showSnack
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     lateinit var editButton: Button
     lateinit var logoutButton: Button
     lateinit var loadingOverlay: View
+
+    private val auth = FirebaseAuth.getInstance()
+
+    companion object {
+        private const val TAG = "HomeFragment"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,9 +100,89 @@ class HomeFragment : Fragment() {
         }
 
         logoutButton.setOnClickListener {
-            val intent = Intent(requireContext(), HomeScreenActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+            showLogoutConfirmationDialog()
+        }
+    }
+
+    /**
+     * Muestra diálogo de confirmación antes de cerrar sesión
+     */
+    private fun showLogoutConfirmationDialog() {
+        // Inflar el layout custom
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_logout, null)
+
+        // Crear el diálogo
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        // Configurar botones
+        dialogView.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
+            dialog.dismiss()
+            performLogout()
+        }
+
+        // Mostrar con animación
+        dialog.show()
+    }
+
+    /**
+     * Cierra sesión completamente
+     */
+    private fun performLogout() {
+        Log.d(TAG, "🚪 Cerrando sesión...")
+
+        // Mostrar loading
+        loadingOverlay.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            try {
+                // 1. Cerrar sesión de Firebase
+                auth.signOut()
+                Log.d(TAG, "✅ Sesión Firebase cerrada")
+
+                // 2. Limpiar SessionManager (SharedPreferences)
+                val sessionManager = SessionManager.getInstance(requireContext())
+                sessionManager.clearSession()
+                Log.d(TAG, "✅ SessionManager limpio")
+
+                // 3. Limpiar QR cache
+                val qrPrefs = QRPreferences.getInstance(requireContext())
+                qrPrefs.clearQR()
+                Log.d(TAG, "✅ QR cache limpio")
+
+                // 4. Limpiar UserSession (memoria)
+                UserSession.clear()
+                Log.d(TAG, "✅ UserSession limpio")
+
+                // 5. Redirigir a HomeScreen
+                val intent = Intent(requireContext(), HomeScreenActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                requireActivity().finish()
+
+                Log.d(TAG, "✅ Logout completado exitosamente")
+
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error al cerrar sesión: ${e.message}")
+
+                // Ocultar loading en caso de error
+                loadingOverlay.visibility = View.GONE
+
+                showSnack(
+                    "Error al cerrar sesión",
+                    Snackbar.LENGTH_LONG,
+                    true,
+                    R.color.ufps_principal,
+                    R.color.ufps_principal
+                )
+            }
         }
     }
 
