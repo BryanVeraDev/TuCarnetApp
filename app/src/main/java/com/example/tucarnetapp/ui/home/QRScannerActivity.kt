@@ -17,13 +17,17 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.utils.showSnack
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.*
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import kotlinx.coroutines.launch
+import com.example.tucarnetapp.data.remote.dto.StudentValidationData
 
 class QRScannerActivity : AppCompatActivity() {
 
@@ -36,7 +40,10 @@ class QRScannerActivity : AppCompatActivity() {
     private val KEY_CAMERA_REQUESTED = "camera_requested"
 
     // Formato esperado del QR
-    private val QR_PREFIX = "UFPSCARNET:"
+    companion object {
+        private const val QR_PREFIX = "UFPSCARNET:"
+        private const val TAG = "QRScanner"
+    }
 
     // Flag para evitar múltiples escaneos
     private var isProcessing = false
@@ -150,7 +157,7 @@ class QRScannerActivity : AppCompatActivity() {
     }
 
     /**
-     * Valida que el QR tenga el formato UFPSCARNET:codigo
+     * Valida que el QR tenga el formato UFPSCARNET:token
      */
     private fun validateQRFormat(qrContent: String): Boolean {
         return qrContent.startsWith(QR_PREFIX) &&
@@ -158,10 +165,10 @@ class QRScannerActivity : AppCompatActivity() {
     }
 
     /**
-     * Extrae el código del estudiante del QR
-     * Formato: UFPSCARNET:1152669 → devuelve "1152669"
+     * Extrae el token JWT del QR
+     * Formato: UFPSCARNET:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
      */
-    private fun extractStudentCode(qrContent: String): String {
+    private fun extractToken(qrContent: String): String {
         return qrContent.removePrefix(QR_PREFIX).trim()
     }
 
@@ -169,30 +176,128 @@ class QRScannerActivity : AppCompatActivity() {
      * Procesa un QR válido y navega a la pantalla de validación
      */
     private fun processValidQR(qrContent: String) {
-        val studentCode = extractStudentCode(qrContent)
+        val token = extractToken(qrContent)
 
-        Log.d("QRScanner", "Código de estudiante extraído: $studentCode")
+        Log.d(TAG, "Token extraído del QR")
 
         // Pausar el scanner
         barcodeView.pause()
 
         // Mostrar feedback al usuario
-        showSnack("Código detectado: $studentCode", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
+        showSnack("Validando código QR...", Snackbar.LENGTH_SHORT, false, R.color.ufps_informacion_claro, R.color.ufps_informacion_oscuro)
 
-        // Navegar a la pantalla de validación
-        val intent = Intent(this, StudentProfileActivity::class.java)
-        intent.putExtra("STUDENT_CODE", studentCode)
+        // Validar contra el backend
+        validateQRWithBackend(token)
+    }
+
+    /**
+     * Valida el token del QR con el backend
+     */
+    private fun validateQRWithBackend(token: String) {
+        lifecycleScope.launch {
+            try {
+                // Crear DTO de validación
+                val validateDto = mapOf("token" to token)
+                // Llamar a la API
+                val response = ApiClient.qrApi.validateQr(validateDto)
+                if (response.isSuccessful && response.body() != null) {
+                    val validationResponse = response.body()!!
+
+                    if (validationResponse.valid && validationResponse.student != null) {
+                        // ✅ QR válido
+                        val student = "${validationResponse.student.card_photo_url}"
+                        Log.d(TAG, student)
+                        handleValidQR(validationResponse.student)
+                    } else {
+                        // ❌ QR inválido
+                        handleInvalidQR("QR no válido o expirado")
+                    }
+                } else {
+                    // Error en la respuesta
+                    val errorMsg = when (response.code()) {
+                        401 -> "QR inválido o expirado"
+                        404 -> "Estudiante no encontrado"
+                        else -> "Error al validar el QR"
+                    }
+                    handleInvalidQR(errorMsg)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al validar QR", e)
+                handleInvalidQR("Error de conexión: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * Maneja un QR válido
+     */
+    private fun handleValidQR(student: StudentValidationData) {
+        Log.d(TAG, "QR válido para estudiante: ${student.name} ${student.last_name}")
+
+        // Mostrar feedback positivo
+        showSnack(
+            "✅ Carnet válido: ${student.name} ${student.last_name}",
+            Snackbar.LENGTH_SHORT,
+            false,
+            R.color.ufps_error_claro,
+            R.color.ufps_texto_oscuro
+        )
+
+        // Navegar a la pantalla de perfil del estudiante
+        val intent = Intent(this, StudentProfileActivity::class.java).apply {
+            // Pasar los datos del estudiante validado
+            putExtra("STUDENT_ID", student.student_id)
+            putExtra("STUDENT_CODE", student.student_code)
+            putExtra("STUDENT_NAME", student.name)
+            putExtra("STUDENT_LAST_NAME", student.last_name)
+            putExtra("STUDENT_EMAIL", student.email)
+            putExtra("STUDENT_CAREER", student.career)
+            putExtra("STUDENT_STATUS", student.status)
+            putExtra("STUDENT_TYPE", student.student_type)
+            putExtra("CARD_PHOTO_URL", student.card_photo_url)
+            putExtra("IS_VALIDATED", true)
+        }
+
         startActivity(intent)
-
-        // Cerrar esta actividad
         finish()
+    }
+
+    /**
+     * Maneja un QR inválido
+     */
+    private fun handleInvalidQR(message: String) {
+
+        showSnack(
+            "❌ $message",
+            Snackbar.LENGTH_LONG,
+            false,
+            R.color.ufps_error_claro,
+            R.color.ufps_error_principal
+        )
+
+        // Reiniciar el scanner después de 2 segundos
+        barcodeView.postDelayed({
+            isProcessing = false
+            barcodeView.resume()
+        }, 2000)
     }
 
     /**
      * Muestra un error cuando el QR no tiene el formato correcto
      */
     private fun showInvalidFormatError() {
-        showSnack("⚠️ QR no válido. Debe ser un carnet UFPS", Snackbar.LENGTH_SHORT, false, R.color.ufps_error_claro, R.color.ufps_error_principal)
+        showSnack(
+            "⚠️ Formato de QR no válido. Debe ser un carnet UFPS",
+            Snackbar.LENGTH_SHORT,
+            false,
+            R.color.ufps_error_claro,
+            R.color.ufps_error_principal
+        )
+
+        // Permitir escanear de nuevo inmediatamente
+        barcodeView.postDelayed({
+            isProcessing = false
+        }, 1000)
     }
 
     override fun onRequestPermissionsResult(

@@ -52,8 +52,8 @@
                 android:id="@+id/imgProfile"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/rounded_image"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
@@ -66,15 +66,55 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dua Lipa"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="2dp" />
+
+            <!--  Timer del QR -->
+            <LinearLayout
+                android:id="@+id/layoutTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/timer_background"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_timer"
+                    android:layout_marginEnd="6dp"
+                    app:tint="@color/ufps_principal" />
+
+                <TextView
+                    android:id="@+id/txtQRTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="59:30"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/ufps_texto_oscuro" />
+            </LinearLayout>
 
             <!-- Imagen del QR -->
             <ImageView
                 android:id="@+id/imgQr"
                 android:layout_width="220dp"
                 android:layout_height="220dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="8dp"
                 android:contentDescription="Código QR" />
+
+            <!-- Badge de estado -->
+            <TextView
+                android:id="@+id/txtQRStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✓ Código válido"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/ufps_success_principal"
+                android:layout_marginBottom="4dp"
+                android:drawablePadding="4dp" />
 
             <!-- Texto informativo -->
             <TextView
@@ -85,7 +125,7 @@
                 android:fontFamily="@font/poppins_italic"
                 android:text="@string/text_share_qr_profile"
                 android:textColor="@color/ufps_texto_oscuro"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="4dp" />
 
             <!-- Marca -->
             <LinearLayout
