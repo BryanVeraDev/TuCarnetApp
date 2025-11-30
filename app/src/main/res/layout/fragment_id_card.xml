@@ -114,19 +114,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <!-- Student CC -->
-            <TextView
-                style="@style/DefaultText"
-                android:id="@+id/tvStudentCC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="CC : 1093123452"
-                android:textSize="13sp"
-                android:textColor="#000000"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCode"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
             <!-- Student Carrera -->
             <TextView
                 style="@style/DefaultText"
@@ -137,7 +124,7 @@
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCC"
+                app:layout_constraintTop_toBottomOf="@id/tvStudentCode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -198,8 +185,8 @@
                 android:layout_height="90dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                android:layout_marginTop="60dp"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCC"
+                android:layout_marginTop="40dp"
+                app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -226,4 +213,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

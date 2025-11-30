@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.session.UserSession
 
 class LoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +17,16 @@ class LoadingActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_loading)
 
-        /*
+        val user = UserSession.currentUser
+
+        if (user == null) {
+            // No hay usuario → regresar a login
+            startActivity(Intent(this, HomeScreenActivity::class.java))
+            finish()
+            return
+        }
+
+
 
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, HomeActivity::class.java)
@@ -25,7 +35,6 @@ class LoadingActivity : AppCompatActivity() {
             finish() // cierra la pantalla de carga
         }, 1000) // 3 segundos de espera
 
-        */
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
