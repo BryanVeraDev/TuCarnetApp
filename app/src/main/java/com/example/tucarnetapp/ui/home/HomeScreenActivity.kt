@@ -27,6 +27,7 @@ import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.data.remote.dto.AuthRequest
 import com.example.tucarnetapp.data.remote.dto.StudentResponse
 import com.example.tucarnetapp.service.LoginRequest
+import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -63,7 +64,7 @@ class HomeScreenActivity : AppCompatActivity() {
         setupWindowInsets()
 
         // Verifica si ya hay sesión activa
-        checkExistingSession()
+        //checkExistingSession()
     }
 
     private fun initializeViews() {
@@ -218,7 +219,9 @@ class HomeScreenActivity : AppCompatActivity() {
                         Log.d("AUTH", "Login exitoso: $student")
 
                         // Guardar usuario en sesión
-                        UserSession.currentUser = student
+                        val sessionManager = SessionManager.getInstance(this@HomeScreenActivity)
+                        sessionManager.saveStudent(student)
+                        //UserSession.currentUser = student
 
                         // Tomar estado biométrico para redirigir
                         val userStatus = student.biometric_profile?.status

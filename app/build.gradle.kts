@@ -47,7 +47,7 @@ android {
 
 dependencies {
 
-    // ---- Firebase (tuyas)
+    // ---- Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.firebase.auth)
