@@ -12,7 +12,7 @@ object ApiClient {
     // Emulador: reemplaza por IP real si usas celular físico
     //private const val BASE_URL_LIVENESS = "http://192.168.1.47:4000"
     private const val BASE_URL_LIVENESS = "https://livenesstucarnetservice-production.up.railway.app"
-    private const val BASE_URL_BACKEND = "http://localhost:3000/api/"
+    private const val BASE_URL_BACKEND = "https://tucarnetbe-production.up.railway.app/api/"
     private val okHttp = OkHttpClient.Builder().build()
 
     val livenessApi: LivenessApi by lazy {

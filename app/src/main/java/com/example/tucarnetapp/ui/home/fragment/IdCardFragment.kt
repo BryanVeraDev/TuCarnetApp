@@ -15,6 +15,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
+import androidx.lifecycle.withStarted
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.session.QRPreferences
@@ -26,6 +28,7 @@ import com.example.tucarnetapp.utils.showSnack
 import com.example.tucarnetapp.viewmodel.QRState
 import com.example.tucarnetapp.data.remote.dto.StudentResponse
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -60,8 +63,12 @@ class IdCardFragment : Fragment() {
     // QR Preferences para persistencia
     private lateinit var qrPrefs: QRPreferences
 
+    //variable state snackbar
+    private var hasShownHint = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hasShownHint = savedInstanceState?.getBoolean("has_shown_hint") ?: false
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -77,6 +84,11 @@ class IdCardFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_id_card, container, false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("has_shown_hint", hasShownHint)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,15 +113,20 @@ class IdCardFragment : Fragment() {
         // Generar QR desde la API
         //generateQRCode()
 
-        // Mostrar snackbar al cargar el fragmento
-        Handler(Looper.getMainLooper()).post {
-            showSnack(
-                "Presiona el código QR para obtener el QR de tu perfil.",
-                duration = Snackbar.LENGTH_LONG,
-                top = true,
-                R.color.ufps_informacion_claro,
-                R.color.ufps_informacion_oscuro
-            )
+        // Mostrar snackbar cuando la vista esté al menos en estado STARTED
+        if (!hasShownHint) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.withStarted {
+                    showSnack(
+                        "Presiona el código QR para obtener el QR de tu perfil.",
+                        duration = Snackbar.LENGTH_LONG,
+                        top = true,
+                        R.color.ufps_informacion_claro,
+                        R.color.ufps_informacion_oscuro
+                    )
+                }
+            }
+            hasShownHint = true
         }
 
         /*// Click listener para ver el QR en pantalla completa

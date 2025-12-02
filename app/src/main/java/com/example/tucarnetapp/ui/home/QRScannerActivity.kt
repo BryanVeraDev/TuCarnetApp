@@ -28,8 +28,9 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import kotlinx.coroutines.launch
 import com.example.tucarnetapp.data.remote.dto.StudentValidationData
+import com.example.tucarnetapp.ui.BaseActivity
 
-class QRScannerActivity : AppCompatActivity() {
+class QRScannerActivity : BaseActivity() {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var flashlightButton: ImageButton
@@ -337,5 +338,15 @@ class QRScannerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (::barcodeView.isInitialized) barcodeView.pause()
+    }
+
+    override fun onInternetAvailable() {
+        super.onInternetAvailable()
+        Log.d(TAG, "✅ Internet restaurado")
+    }
+
+    override fun onInternetLost() {
+        super.onInternetLost()
+        Log.d(TAG, "❌ Internet perdido")
     }
 }
