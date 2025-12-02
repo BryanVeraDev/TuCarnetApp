@@ -1,6 +1,8 @@
 package com.example.tucarnetapp.ui
 
 import android.os.Bundle
+import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.tucarnetapp.ui.common.NoInternetDialog
@@ -17,6 +19,8 @@ abstract class BaseActivity : AppCompatActivity(), NoInternetDialog.Listener {
     private lateinit var networkMonitor: NetworkMonitor
     private var isInternetAvailable = true
     private var isMonitoringStarted = false
+    // Contador de fragments que requieren bloqueo
+    private var screenshotBlockCount = 0
 
     companion object {
         private const val DIALOG_TAG = "NoInternetDialog"
@@ -98,6 +102,29 @@ abstract class BaseActivity : AppCompatActivity(), NoInternetDialog.Listener {
             true
         } else {
             false
+        }
+    }
+
+    /**
+    * Controla si se permiten screenshots
+    * @param block true = bloquear, false = desbloquear
+    */
+    fun setScreenshotsBlocked(block: Boolean) {
+        if (block) {
+            screenshotBlockCount++
+            if (screenshotBlockCount == 1) {
+                window.setFlags(
+                    WindowManager.LayoutParams.FLAG_SECURE,
+                    WindowManager.LayoutParams.FLAG_SECURE
+                )
+                Log.d("BaseActivity", "🚫 Screenshots bloqueados (count: $screenshotBlockCount)")
+            }
+        } else {
+            screenshotBlockCount = maxOf(0, screenshotBlockCount - 1)
+            if (screenshotBlockCount == 0) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                Log.d("BaseActivity", "✅ Screenshots habilitados (count: $screenshotBlockCount)")
+            }
         }
     }
 

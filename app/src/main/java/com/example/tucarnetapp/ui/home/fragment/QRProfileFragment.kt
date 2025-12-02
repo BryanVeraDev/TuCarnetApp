@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.session.QRPreferences
 import com.example.tucarnetapp.session.UserSession
+import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.viewmodel.QRViewModel
 import com.example.tucarnetapp.utils.showSnack
 import com.example.tucarnetapp.viewmodel.QRState
@@ -91,8 +92,8 @@ class QRProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BaseActivity)?.setScreenshotsBlocked(true)
         initViews(view)
-
         setupAppBar()
         loadQRCode()
         loadStudentInfo()
@@ -367,6 +368,7 @@ class QRProfileFragment : Fragment() {
 
 
     override fun onDestroyView() {
+        (activity as? BaseActivity)?.setScreenshotsBlocked(false)
         super.onDestroyView()
         // Cancelar el timer automáticamente
         timerJob?.cancel()
