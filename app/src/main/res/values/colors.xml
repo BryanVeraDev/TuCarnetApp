@@ -7,6 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="carnet_red_main">#E30613</color>
+    <color name="carnet_red_dark">#BC0017</color>
 
     <color name="ufps_principal">#E53935</color>
     <color name="ufps_secundario">#3C8DBC</color>

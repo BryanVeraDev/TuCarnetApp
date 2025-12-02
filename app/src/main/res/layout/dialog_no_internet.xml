@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bottom_sheet_background">
+
+    <!-- Handle bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/ufps_gris_principal"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Icono de "Sin internet" -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_no_internet"
+        android:layout_marginBottom="16dp"
+        app:tint="@color/ufps_principal" />
+
+    <!-- Título -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sin conexión a internet"
+        android:textSize="24sp"
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/ufps_texto_principal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Mensaje -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Esta aplicación requiere conexión a internet para funcionar. Por favor, verifica tu conexión y vuelve a intentar."
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins_regular"
+        android:textColor="@color/ufps_texto_oscuro"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Botón Reintentar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRetry"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Reintentar"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_semibold"
+        android:backgroundTint="@color/ufps_principal"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        app:iconGravity="textStart"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Botón Cerrar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnClose"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Cerrar aplicación"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/ufps_texto_oscuro" />
+
+</LinearLayout>

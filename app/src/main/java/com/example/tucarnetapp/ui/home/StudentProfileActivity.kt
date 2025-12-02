@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,9 +14,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.ui.BaseActivity
 import com.google.android.material.button.MaterialButton
 
-class StudentProfileActivity : AppCompatActivity() {
+class StudentProfileActivity : BaseActivity() {
 
     private lateinit var textValidationMessage: TextView
     private lateinit var imgProfile: ImageView
@@ -25,6 +27,10 @@ class StudentProfileActivity : AppCompatActivity() {
     private lateinit var textStatus: TextView
     private lateinit var btnLogout: MaterialButton
     private lateinit var infoContainer: View
+
+    companion object {
+        private const val TAG = "StudentProfile"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,6 +208,16 @@ class StudentProfileActivity : AppCompatActivity() {
         btnLogout.setOnClickListener {
             finish() // Volver a la pantalla anterior
         }
+    }
+
+    override fun onInternetAvailable() {
+        super.onInternetAvailable()
+        Log.d(TAG, "✅ Internet restaurado")
+    }
+
+    override fun onInternetLost() {
+        super.onInternetLost()
+        Log.d(TAG, "❌ Internet perdido")
     }
 
 }

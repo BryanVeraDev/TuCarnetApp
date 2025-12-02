@@ -29,6 +29,7 @@ import com.example.tucarnetapp.data.remote.dto.StudentResponse
 import com.example.tucarnetapp.service.LoginRequest
 import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
+import com.example.tucarnetapp.ui.BaseActivity
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -38,7 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.example.tucarnetapp.ui.terms.TermsConditionsActivity
 
-class HomeScreenActivity : AppCompatActivity() {
+class HomeScreenActivity : BaseActivity() {
 
     private lateinit var startButton: Button
     private lateinit var scannerButton: Button
@@ -83,12 +84,15 @@ class HomeScreenActivity : AppCompatActivity() {
         }
 
         scannerButton.setOnClickListener {
-            val intent = Intent(this, QRScannerActivity::class.java)
-            startActivity(intent)
+            requireInternet {
+                val intent = Intent(this, QRScannerActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
     private fun signIn() {
+        requireInternet {
         // Configura el diálogo de Credential Manager
         val signInWithGoogleOption = GetSignInWithGoogleOption.Builder(
             serverClientId = getString(R.string.default_web_client_id)
@@ -100,6 +104,7 @@ class HomeScreenActivity : AppCompatActivity() {
             .build()
 
         launchCredentialManager(request)
+        }
     }
 
     private fun launchCredentialManager(request: GetCredentialRequest) {
@@ -360,6 +365,28 @@ class HomeScreenActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+    }
+
+    override fun onInternetAvailable() {
+        super.onInternetAvailable()
+        Log.d(TAG, "✅ Internet restaurado")
+
+        // Verificar si están inicializadas
+        if (::startButton.isInitialized && ::scannerButton.isInitialized) {
+            startButton.isEnabled = true
+            scannerButton.isEnabled = true
+        }
+    }
+
+    override fun onInternetLost() {
+        super.onInternetLost()
+        Log.d(TAG, "❌ Internet perdido")
+
+        // Verificar si están inicializadas
+        if (::startButton.isInitialized && ::scannerButton.isInitialized) {
+            startButton.isEnabled = false
+            scannerButton.isEnabled = false
         }
     }
 }
