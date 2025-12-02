@@ -27,6 +27,7 @@ import com.example.tucarnetapp.viewmodel.QRViewModel
 import com.example.tucarnetapp.utils.showSnack
 import com.example.tucarnetapp.viewmodel.QRState
 import com.example.tucarnetapp.data.remote.dto.StudentResponse
+import com.example.tucarnetapp.ui.BaseActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -93,6 +94,9 @@ class IdCardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Evitar Screenshots
+        (activity as? BaseActivity)?.setScreenshotsBlocked(true)
 
         // Inicializar vistas
         initViews(view)
@@ -432,6 +436,12 @@ class IdCardFragment : Fragment() {
             e.printStackTrace()
             null
         }
+    }
+
+    override fun onDestroyView() {
+        // ✅ Restaurar al salir
+        (activity as? BaseActivity)?.setScreenshotsBlocked(false)
+        super.onDestroyView()
     }
 
     companion object {
