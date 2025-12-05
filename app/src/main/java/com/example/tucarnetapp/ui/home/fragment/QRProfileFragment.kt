@@ -161,7 +161,7 @@ class QRProfileFragment : Fragment() {
             qrViewModel.qrState.collect { state ->
                 when (state) {
                     is QRState.Loading -> {
-                        progressBar.visibility = View.VISIBLE
+                        //progressBar.visibility = View.VISIBLE
                         txtQRStatus.text = "Renovando código..."
                         txtQRStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)

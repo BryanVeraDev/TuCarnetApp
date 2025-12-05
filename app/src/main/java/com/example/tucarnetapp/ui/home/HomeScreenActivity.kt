@@ -22,11 +22,9 @@ import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.example.tucarnetapp.R
-import com.example.tucarnetapp.config.Client
 import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.data.remote.dto.AuthRequest
 import com.example.tucarnetapp.data.remote.dto.StudentResponse
-import com.example.tucarnetapp.service.LoginRequest
 import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.ui.BaseActivity

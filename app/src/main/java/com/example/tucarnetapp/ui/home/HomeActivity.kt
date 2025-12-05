@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,7 +13,6 @@ import com.example.tucarnetapp.R
 import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.ui.home.fragment.IdCardFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
-import org.w3c.dom.Text
 
 class HomeActivity : BaseActivity() {
 
@@ -109,7 +107,12 @@ class HomeActivity : BaseActivity() {
     /** Cambia el fragmento actual */
     private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
-            .setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .setCustomAnimations(
+                android.R.anim.fade_in,   // Animación de entrada del nuevo fragment
+                android.R.anim.fade_out,  // Animación de salida del fragment actual
+                android.R.anim.fade_in,   // (opcional) al hacer popBackStack
+                android.R.anim.fade_out   // (opcional) al hacer popBackStack
+            )
             .replace(R.id.fragmentContainer, fragment)
             .commit()
     }

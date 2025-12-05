@@ -109,6 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="DUKAGJIN LIPA\nANESA REXHA"
+                        android:text=""
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="#000000"
@@ -125,6 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="CÓDIGO : 1152810"
+                        android:text=""
                         android:textSize="13sp"
                         android:textColor="#000000"
                         android:layout_marginTop="6dp"
@@ -139,6 +141,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="CARRERA: Ing Sistemas"
+                        android:text=""
                         android:textSize="13sp"
                         android:textColor="#000000"
                         android:layout_marginTop="4dp"
@@ -186,6 +189,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="ESTUDIANTE"
+                            android:text=""
                             android:textSize="19sp"
                             android:textColor="#FFFFFF"
                             android:shadowColor="#000000"
@@ -237,6 +241,7 @@
 
     <!-- Overlay de carga sobre todo el contenido -->
     <include
-        layout="@layout/loading_overlay" />
+        layout="@layout/loading_overlay"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
