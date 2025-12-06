@@ -3,9 +3,12 @@ package com.example.tucarnetapp.data.repository
 import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesRequest
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesResponse
+import com.example.tucarnetapp.data.remote.dto.aws.GetPhotoRequest
 import com.example.tucarnetapp.data.remote.dto.aws.LivenessResultResponse
 import com.example.tucarnetapp.data.remote.dto.aws.LivenessSessionResponse
 import com.example.tucarnetapp.data.remote.dto.aws.PhotoUrlResponse
+import com.example.tucarnetapp.data.remote.dto.aws.UploadPhotoRequest
+import com.example.tucarnetapp.data.remote.dto.aws.UploadPhotoResponse
 
 class LivenessRepository {
 
@@ -26,10 +29,24 @@ class LivenessRepository {
     }
 
     /**
-     * GET /liveness/photo/{photoKey}
+     * GET /liveness/photo
      */
     suspend fun getPhotoUrl(photoKey: String): PhotoUrlResponse {
-        return api.getPhoto(photoKey)
+        val request = GetPhotoRequest(
+            photoKey = photoKey
+        )
+        return api.getPhoto(request)
+    }
+
+    /**
+     * POST /liveness/photo
+     */
+    suspend fun uploadPhotoBase64(imageBase64: String): UploadPhotoResponse {
+        val request = UploadPhotoRequest(
+            imageBase64 = imageBase64
+        )
+        return api.uploadPhoto(request)
+
     }
 
     /**

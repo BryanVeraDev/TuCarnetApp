@@ -2,9 +2,12 @@ package com.example.tucarnetapp.data.remote.api
 
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesRequest
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesResponse
+import com.example.tucarnetapp.data.remote.dto.aws.GetPhotoRequest
 import com.example.tucarnetapp.data.remote.dto.aws.LivenessResultResponse
 import com.example.tucarnetapp.data.remote.dto.aws.LivenessSessionResponse
 import com.example.tucarnetapp.data.remote.dto.aws.PhotoUrlResponse
+import com.example.tucarnetapp.data.remote.dto.aws.UploadPhotoRequest
+import com.example.tucarnetapp.data.remote.dto.aws.UploadPhotoResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -23,6 +26,11 @@ interface LivenessApi {
         @Body body: CompareFacesRequest
     ): CompareFacesResponse
 
+    // POST /liveness/photo
+    @POST("/liveness/photo")
+    suspend fun uploadPhoto(
+        @Body body: UploadPhotoRequest
+    ): UploadPhotoResponse
 
     // GET /liveness/result/{sessionId}
     @GET("/liveness/result/{sessionId}")
@@ -31,9 +39,9 @@ interface LivenessApi {
     ): LivenessResultResponse
 
 
-    // GET /liveness/photo/{photoKey}
-    @GET("/liveness/photo/{photoKey}")
+    // GET /liveness/photo
+    @GET("/liveness/photo")
     suspend fun getPhoto(
-        @Path("photoKey") photoKey: String
+        @Body body: GetPhotoRequest
     ): PhotoUrlResponse
 }
