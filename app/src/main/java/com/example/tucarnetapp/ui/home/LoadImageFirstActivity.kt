@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.data.repository.LivenessRepository
+import com.example.tucarnetapp.data.repository.StudentRepository
+import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.utils.SnackRouter
 import com.example.tucarnetapp.utils.showSnack
 import com.google.android.material.button.MaterialButton
@@ -35,11 +38,15 @@ class LoadImageFirstActivity : AppCompatActivity() {
 
 
     private val repository = LivenessRepository()
+    private val studentRepository = StudentRepository()
 
     private var imageUri: Uri? = null
     private var tempCameraUri: Uri? = null
 
     private var attemptsLeft = 3
+
+    private var TAG = "CompareFaces"
+
 
     // ---------------- UCROP ----------------
 
@@ -142,10 +149,16 @@ class LoadImageFirstActivity : AppCompatActivity() {
 
     private fun compareFaces() {
 
-        val selectedBase64 = uriToBase64(imageUri!!)
+        val mime = contentResolver.getType(imageUri!!) ?: "image/jpeg"
+        val selectedBase64 = "data:$mime;base64," + uriToBase64(imageUri!!)
         val referenceBase64 = intent.getStringExtra("referenceImageBase64")
 
+        Log.d(TAG, "compareFaces() iniciado")
+        Log.d(TAG, "imageUri: $imageUri")
+
         if (referenceBase64.isNullOrBlank()) {
+            Log.e(TAG, "Imagen de referencia NULL o vacía")
+
             SnackRouter.showNext(
                 "No se encontró la imagen de referencia",
                 top = true,
@@ -157,52 +170,167 @@ class LoadImageFirstActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
 
+            Log.d(TAG, "Mostrando loading")
             showLoading()
             btnConfirmPhoto.isEnabled = false
 
-            // ✅ SIEMPRE hay respuesta (no error)
-            val response = repository.compareFaces(
-                sourceImageBase64 = referenceBase64,
-                targetImageBase64 = selectedBase64
-            )
+            try {
+                // 1️⃣ Comparación facial
+                Log.d(TAG, "Llamando a compareFaces API")
 
-            val match = response.matches.firstOrNull()
-            val similarity = match?.similarity ?: 0.0
-
-            hideLoading()
-
-            if (similarity >= 90.0) {
-                // ✅ MATCH REAL
-                SnackRouter.showNext(
-                    "Verificación facial exitosa (${similarity.toInt()}%)",
-                    top = true,
-                    backgroundColor = R.color.ufps_success_claro,
-                    textColor = R.color.ufps_success_oscuro
+                val response = repository.compareFaces(
+                    sourceImageBase64 = referenceBase64,
+                    targetImageBase64 = selectedBase64
                 )
 
-                startActivity(
-                    Intent(this@LoadImageFirstActivity, HomeActivity::class.java)
-                )
-                finish()
+                val similarity = response.matches.firstOrNull()?.similarity ?: 0.0
+                val isApproved = similarity >= 90.0
 
-            } else {
-                // ❌ NO MATCH
-                attemptsLeft--
+                Log.d(TAG, "Similarity obtenida: $similarity")
+                Log.d(TAG, "isApproved: $isApproved")
+                Log.d(TAG, "URI Foto: $selectedBase64")
+
+                var s3Key = ""
+
+                if (isApproved) {
+                    Log.d(TAG, "Similarity > 90 → subir foto a S3 (simulado)")
+                    try {
+                        val response = repository.uploadPhotoBase64(selectedBase64)
+
+                        Log.d(TAG, "Foto subida exitosamente")
+                        Log.d(TAG, "Respuesta del backend: $response")
+
+                        s3Key = response.photoKey
+
+                    } catch (e: Exception) {
+                        if (e is retrofit2.HttpException) {
+                            val errorBody = e.response()?.errorBody()?.string()
+
+                            Log.e(TAG, "HTTP ERROR ${e.code()}")
+                            Log.e(TAG, "Error body: $errorBody")
+
+                            showSnack(
+                                errorBody ?: "Error HTTP ${e.code()}",
+                                top = true,
+                                backgroundColor = R.color.ufps_error_claro,
+                                textColor = R.color.ufps_error_principal
+                            )
+
+                        } else {
+                            Log.e(TAG, "Error inesperado al subir la foto", e)
+
+                            showSnack(
+                                "Error inesperado al subir la foto",
+                                top = true,
+                                backgroundColor = R.color.ufps_error_claro,
+                                textColor = R.color.ufps_error_principal
+                            )
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "Similarity < 90 → NO se sube foto")
+                }
+
+                val user = UserSession.currentUser
+                if (user != null) {
+                    Log.d(
+                        TAG,
+                        "Usuario logeado: ${user.student_id}, enviando updateBiometricProfile"
+                    )
+
+                    studentRepository.updateBiometricProfile(
+                        studentId = user.student_id,
+                        cardPhotoKey = s3Key,
+                        similarity = similarity
+                    )
+                    Log.d(TAG, "updateBiometricProfile enviado correctamente")
+                } else {
+                    Log.e(TAG, "UserSession.currentUser == null")
+                }
+
+                Log.d(TAG, "Ocultando loading")
+                hideLoading()
+
+                // 3️⃣ UI
+                if (isApproved) {
+                    Log.d(TAG, "Mostrando snack APROBADO")
+
+                    SnackRouter.showNext(
+                        "Verificación facial exitosa. Porcentaje de similitud: (${similarity.toInt()}%)",
+                        top = true,
+                        backgroundColor = R.color.ufps_success_claro,
+                        textColor = R.color.ufps_success_oscuro
+                    )
+
+                    Log.d(TAG, "Navegando a HomeActivity")
+
+                    startActivity(
+                        Intent(this@LoadImageFirstActivity, HomeActivity::class.java)
+                    )
+                    finish()
+
+                } else {
+                    attemptsLeft--
+                    btnConfirmPhoto.isEnabled = true
+
+                    Log.d(TAG, "Mostrando snack RECHAZADO, attemptsLeft=$attemptsLeft")
+
+                    showSnack(
+                        "La foto no coincide. Intentos restantes: $attemptsLeft",
+                        top = true,
+                        backgroundColor = R.color.ufps_error_claro,
+                        textColor = R.color.ufps_error_principal
+                    )
+
+                    if (attemptsLeft <= 0) {
+                        Log.e(TAG, "Intentos agotados → cerrando Activity")
+                        SnackRouter.showNext(
+                            "Has agotado los 3 intentos. Regresarás a la pantalla de inicio",
+                            top = true,
+                            backgroundColor = R.color.ufps_error_claro,
+                            textColor = R.color.ufps_error_principal
+                        )
+                        startActivity(
+                            Intent(this@LoadImageFirstActivity, HomeScreenActivity::class.java)
+                        )
+                        finish()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Error en compareFaces()", e)
+
+                hideLoading()
                 btnConfirmPhoto.isEnabled = true
 
-                showSnack(
-                    "La foto no coincide. Intentos restantes: $attemptsLeft",
-                    top = true,
-                    backgroundColor = R.color.ufps_error_claro,
-                    textColor = R.color.ufps_error_principal
-                )
+                if (e is retrofit2.HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
 
-                if (attemptsLeft <= 0) {
-                    finish()
+                    Log.e(TAG, "HTTP ERROR ${e.code()}")
+                    Log.e(TAG, "Error body: $errorBody")
+
+                    showSnack(
+                        errorBody ?: "Error HTTP ${e.code()}",
+                        top = true,
+                        backgroundColor = R.color.ufps_error_claro,
+                        textColor = R.color.ufps_error_principal
+                    )
+
+                } else {
+                    Log.e(TAG, "Error inesperado al subir la foto", e)
+
+                    showSnack(
+                        "Error al verificar el rostro",
+                        top = true,
+                        backgroundColor = R.color.ufps_error_claro,
+                        textColor = R.color.ufps_error_principal
+                    )
                 }
             }
         }
     }
+
+
 
 
     // ---------------- UTILITIES ----------------

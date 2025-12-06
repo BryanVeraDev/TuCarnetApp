@@ -3,6 +3,7 @@ package com.example.tucarnetapp.data.remote
 import com.example.tucarnetapp.data.remote.api.LivenessApi
 import com.example.tucarnetapp.data.remote.api.AuthApi
 import com.example.tucarnetapp.data.remote.api.QrApi
+import com.example.tucarnetapp.data.remote.api.StudentApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,5 +40,14 @@ object ApiClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(QrApi::class.java)
+    }
+
+    val studentApi: StudentApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_BACKEND)
+            .client(okHttp)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(StudentApi::class.java)
     }
 }
