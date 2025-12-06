@@ -330,7 +330,7 @@ class QRProfileFragment : Fragment() {
             txtUserName.text = fullName
 
             // Cargar foto de perfil si existe
-            currentUser.card_photo_url?.let { photoUrl ->
+            currentUser.card_photo_key?.let { photoUrl ->
                 if (photoUrl.startsWith("http")) {
                     // Si es URL, usar Glide (descomentar cuando agregues Glide)
                     Glide.with(this).load(photoUrl).into(imgProfile)

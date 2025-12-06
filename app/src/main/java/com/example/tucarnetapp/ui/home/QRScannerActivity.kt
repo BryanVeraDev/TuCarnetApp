@@ -206,7 +206,7 @@ class QRScannerActivity : BaseActivity() {
 
                     if (validationResponse.valid && validationResponse.student != null) {
                         // ✅ QR válido
-                        val student = "${validationResponse.student.card_photo_url}"
+                        val student = "${validationResponse.student.card_photo_key}"
                         Log.d(TAG, student)
                         handleValidQR(validationResponse.student)
                     } else {
@@ -255,7 +255,7 @@ class QRScannerActivity : BaseActivity() {
             putExtra("STUDENT_CAREER", student.career)
             putExtra("STUDENT_STATUS", student.status)
             putExtra("STUDENT_TYPE", student.student_type)
-            putExtra("CARD_PHOTO_URL", student.card_photo_url)
+            putExtra("CARD_PHOTO_KEY", student.card_photo_key)
             putExtra("IS_VALIDATED", true)
         }
 

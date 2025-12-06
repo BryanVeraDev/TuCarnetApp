@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:title="¡Hola, Dua Lipa!"
+            app:title="¡Hola, Juan García!"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextTitle" />
     </com.google.android.material.appbar.AppBarLayout>

@@ -38,6 +38,7 @@ import kotlinx.coroutines.tasks.await
 import com.example.tucarnetapp.ui.terms.TermsConditionsActivity
 import com.example.tucarnetapp.utils.SnackRouter
 import com.example.tucarnetapp.utils.showSnack
+import org.json.JSONObject
 
 class HomeScreenActivity : BaseActivity() {
 
@@ -180,6 +181,13 @@ class HomeScreenActivity : BaseActivity() {
 
                 // Obtén el ID Token de Firebase
                 val user = auth.currentUser
+
+                if (user != null) {
+                    // 🔥 ESTE ES EL ID DE FIREBASE
+                    Log.d(TAG, "🔥 Firebase UID: ${user.uid}")
+                    Log.d(TAG, "📧 Firebase Email: ${user.email}")
+                }
+
                 val firebaseIdToken = user?.getIdToken(false)?.await()?.token
 
                 if (firebaseIdToken != null) {
@@ -260,10 +268,18 @@ class HomeScreenActivity : BaseActivity() {
 
                 } else {
                     val errorText = response.errorBody()?.string()
+                    val errorMessage = try {
+                        errorText?.let {
+                            JSONObject(it).getString("message")
+                        }
+                    } catch (e: Exception) {
+                        null
+                    }
+
                     Log.e("AUTH", "Error backend: $errorText")
 
                     showSnack(
-                        message = "Error del servidor",
+                        message = "$errorMessage",
                         top = true,
                         backgroundColor = R.color.ufps_error_claro,
                         textColor = R.color.ufps_error_principal

@@ -13,6 +13,7 @@ import com.example.tucarnetapp.R
 import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.ui.home.fragment.IdCardFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
+import com.example.tucarnetapp.utils.SnackRouter
 
 class HomeActivity : BaseActivity() {
 
@@ -33,6 +34,7 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
+        SnackRouter.deliver(this)
 
         // Referencias a los elementos de la barra
         navHome = findViewById(R.id.navHome)

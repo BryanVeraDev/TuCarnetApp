@@ -74,7 +74,7 @@ class StudentProfileActivity : BaseActivity() {
         val career = intent.getStringExtra("STUDENT_CAREER") ?: ""
         val status = intent.getStringExtra("STUDENT_STATUS") ?: ""
         val studentType = intent.getStringExtra("STUDENT_TYPE") ?: ""
-        val cardPhotoUrl = intent.getStringExtra("CARD_PHOTO_URL")
+        val cardPhotoKey = intent.getStringExtra("CARD_PHOTO_KEY")
 
         // Validar que tengamos los datos mínimos
         if (studentCode.isNullOrEmpty() || name.isNullOrEmpty()) {
@@ -90,7 +90,7 @@ class StudentProfileActivity : BaseActivity() {
             career = career ?: "N/A",
             status = status ?: "N/A",
             studentType = studentType,
-            cardPhotoUrl = cardPhotoUrl
+            cardPhotoKey = cardPhotoKey
         )
     }
 
@@ -106,7 +106,7 @@ class StudentProfileActivity : BaseActivity() {
         career: String,
         status: String,
         studentType: String?,
-        cardPhotoUrl: String?
+        cardPhotoKey: String?
     ) {
         // Configurar mensaje de validación exitosa
         textValidationMessage.apply {
@@ -126,18 +126,18 @@ class StudentProfileActivity : BaseActivity() {
         textStatus.text = " ${formatStatus(status)}"
 
         // Cargar imagen del estudiante
-        if (!cardPhotoUrl.isNullOrEmpty()) {
-            if (cardPhotoUrl.startsWith("data:image")) {
+        if (!cardPhotoKey.isNullOrEmpty()) {
+            if (cardPhotoKey.startsWith("data:image")) {
                 // Cargar desde base64
-                val bitmap = base64ToBitmap(cardPhotoUrl)
+                val bitmap = base64ToBitmap(cardPhotoKey)
                 if (bitmap != null) {
                     imgProfile.setImageBitmap(bitmap)
                 } else {
                     imgProfile.setImageResource(R.drawable.profile_blank)
                 }
-            } else if (cardPhotoUrl.startsWith("http")) {
+            } else if (cardPhotoKey.startsWith("http")) {
                 // Cargar desde URL con Glide (si está disponible)
-                Glide.with(this).load(cardPhotoUrl).error(R.drawable.profile_blank).into(imgProfile)
+                Glide.with(this).load(cardPhotoKey).error(R.drawable.profile_blank).into(imgProfile)
             } else {
                 imgProfile.setImageResource(R.drawable.profile_blank)
             }

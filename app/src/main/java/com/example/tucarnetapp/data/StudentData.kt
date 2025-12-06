@@ -6,6 +6,6 @@ data class StudentData(
     val career: String,
     val status: String,
     val studentType: String = "ESTUDIANTE",
-    val profileImageUrl: String? = null,
+    val profileImageKey: String? = null,
     val qrCodeUrl: String? = null
 )
