@@ -36,6 +36,8 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.example.tucarnetapp.ui.terms.TermsConditionsActivity
+import com.example.tucarnetapp.utils.SnackRouter
+import com.example.tucarnetapp.utils.showSnack
 
 class HomeScreenActivity : BaseActivity() {
 
@@ -55,7 +57,7 @@ class HomeScreenActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_screen)
-
+        SnackRouter.deliver(this)
         initializeViews()
         setupFirebase()
         setupButtons()
@@ -91,17 +93,17 @@ class HomeScreenActivity : BaseActivity() {
 
     private fun signIn() {
         requireInternet {
-        // Configura el diálogo de Credential Manager
-        val signInWithGoogleOption = GetSignInWithGoogleOption.Builder(
-            serverClientId = getString(R.string.default_web_client_id)
-        ).build()
+            // Configura el diálogo de Credential Manager
+            val signInWithGoogleOption = GetSignInWithGoogleOption.Builder(
+                serverClientId = getString(R.string.default_web_client_id)
+            ).build()
 
-        // Crea la solicitud
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(signInWithGoogleOption)
-            .build()
+            // Crea la solicitud
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(signInWithGoogleOption)
+                .build()
 
-        launchCredentialManager(request)
+            launchCredentialManager(request)
         }
     }
 
@@ -121,11 +123,12 @@ class HomeScreenActivity : BaseActivity() {
 
             } catch (e: GetCredentialException) {
                 Log.e(TAG, "Error al obtener credenciales: ${e.message}", e)
-                Toast.makeText(
-                    this@HomeScreenActivity,
-                    "Error al iniciar sesión: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showSnack(
+                    message = "Error al iniciar sesión",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
             }
         }
     }
@@ -142,12 +145,12 @@ class HomeScreenActivity : BaseActivity() {
             Log.d(TAG, "Email recibido: $email")
 
             if (!email.endsWith(UFPS_DOMAIN)) {
-                Toast.makeText(
-                    this,
-                    "Debes usar tu correo institucional (@ufps.edu.co)",
-                    Toast.LENGTH_LONG
-                ).show()
-
+                showSnack(
+                    message = "Debes usar tu correo institucional (@ufps.edu.co)",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
                 // Cierra la sesión
                 signOut()
                 return
@@ -158,7 +161,12 @@ class HomeScreenActivity : BaseActivity() {
 
         } else {
             Log.w(TAG, "La credencial no es de tipo Google ID Token")
-            Toast.makeText(this, "Tipo de credencial no válido", Toast.LENGTH_SHORT).show()
+            showSnack(
+                message = "Tipo de credencial no válido",
+                top = true,
+                backgroundColor = R.color.ufps_error_claro,
+                textColor = R.color.ufps_error_principal
+            )
         }
     }
 
@@ -177,16 +185,22 @@ class HomeScreenActivity : BaseActivity() {
                 if (firebaseIdToken != null) {
                     sendTokenToBackend(firebaseIdToken)
                 } else {
-                    Toast.makeText(this@HomeScreenActivity, "Error al obtener token", Toast.LENGTH_SHORT).show()
+                    showSnack(
+                        message = "Error al obtener token",
+                        top = true,
+                        backgroundColor = R.color.ufps_error_claro,
+                        textColor = R.color.ufps_error_principal
+                    )
                 }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Error en autenticación Firebase", e)
-                Toast.makeText(
-                    this@HomeScreenActivity,
-                    "Error de autenticación: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showSnack(
+                    message = "Error de autenticación",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
             }
         }
     }
@@ -195,7 +209,12 @@ class HomeScreenActivity : BaseActivity() {
 
         val user = auth.currentUser
         if (user == null) {
-            Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show()
+            showSnack(
+                message = "Usuario no encontrado",
+                top = true,
+                backgroundColor = R.color.ufps_error_claro,
+                textColor = R.color.ufps_error_principal
+            )
             return
         }
 
@@ -231,27 +250,34 @@ class HomeScreenActivity : BaseActivity() {
                         redirectUserBasedOnStatus(userStatus, student)
 
                     } else {
-                        Toast.makeText(this@HomeScreenActivity, "Respuesta vacía del servidor", Toast.LENGTH_LONG).show()
+                        showSnack(
+                            message = "Respuesta vacía del servidor",
+                            top = true,
+                            backgroundColor = R.color.ufps_error_claro,
+                            textColor = R.color.ufps_error_principal
+                        )
                     }
 
                 } else {
                     val errorText = response.errorBody()?.string()
                     Log.e("AUTH", "Error backend: $errorText")
 
-                    Toast.makeText(
-                        this@HomeScreenActivity,
-                        "Error del servidor: $errorText",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnack(
+                        message = "Error del servidor",
+                        top = true,
+                        backgroundColor = R.color.ufps_error_claro,
+                        textColor = R.color.ufps_error_principal
+                    )
                 }
 
             } catch (e: Exception) {
                 Log.e("AUTH", "Error conexión backend: ${e.message}")
-                Toast.makeText(
-                    this@HomeScreenActivity,
-                    "Error de conexión: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showSnack(
+                    message = "Error de conexión",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
             }
         }
     }
@@ -268,32 +294,35 @@ class HomeScreenActivity : BaseActivity() {
             "PENDIENTE" -> {
                 // Usuario pendiente de aprobación
                 val intent = Intent(this, TermsConditionsActivity::class.java)
+                SnackRouter.showNext(
+                    message = "Tu registro está pendiente. Completa la verificación biométrica.",
+                    top = true,
+                    backgroundColor = R.color.ufps_informacion_claro,
+                    textColor = R.color.ufps_informacion_oscuro
+                )
                 startActivity(intent)
                 finish()
-                Toast.makeText(
-                    this,
-                    "Tu registro está pendiente. Completa la verificación biométrica.",
-                    Toast.LENGTH_LONG
-                ).show()
             }
             "RECHAZADO" -> {
                 // Usuario rechazado
                 val intent = Intent(this, TermsConditionsActivity::class.java)
+                SnackRouter.showNext(
+                    message = "Verificación biométrica rechazada. Debes intentarlo nuevamente.",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
                 startActivity(intent)
                 finish()
-                Toast.makeText(
-                    this,
-                    "Verificación biométrica rechazada. Debes intentarlo nuevamente.",
-                    Toast.LENGTH_LONG
-                ).show()
             }
             else -> {
-                Toast.makeText(
-                    this,
-                    "Estado desconocido. Completa tu registro.",
-                    Toast.LENGTH_SHORT
-                ).show()
                 val intent = Intent(this, TermsConditionsActivity::class.java)
+                SnackRouter.showNext(
+                    message = "Estado desconocido. Completa tu registro",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
                 startActivity(intent)
                 finish()
                 // val intent = Intent(this, RegistrationActivity::class.java)
@@ -344,11 +373,17 @@ class HomeScreenActivity : BaseActivity() {
                     finishAffinity()
                 } else {
                     doubleBackToExitPressedOnce = true
-                    Toast.makeText(
+                    /*Toast.makeText(
                         this@HomeScreenActivity,
                         "Presiona nuevamente para salir",
                         Toast.LENGTH_SHORT
-                    ).show()
+                    ).show()*/
+                    showSnack(
+                        message = "Presiona nuevamente para salir",
+                        top = true,
+                        backgroundColor = R.color.ufps_informacion_claro,
+                        textColor = R.color.ufps_informacion_oscuro
+                    )
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         doubleBackToExitPressedOnce = false

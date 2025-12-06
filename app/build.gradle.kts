@@ -47,6 +47,8 @@ android {
 
 dependencies {
 
+    // ---- Google Play Services Auth
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     // ---- Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
@@ -103,6 +105,9 @@ dependencies {
 
     // ---- Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // ---- UCrop
+    implementation("com.github.yalantis:ucrop:2.2.11")
 
     // ---- Test
     testImplementation(libs.junit)

@@ -49,15 +49,11 @@
     <!-- Botón Reintentar -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRetry"
+        style="@style/PrincipalRedButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="Reintentar"
         android:textSize="16sp"
-        android:fontFamily="@font/poppins_semibold"
-        android:backgroundTint="@color/ufps_principal"
-        android:textColor="@color/white"
-        app:cornerRadius="12dp"
-        app:iconGravity="textStart"
         android:layout_marginBottom="8dp" />
 
     <!-- Botón Cerrar -->

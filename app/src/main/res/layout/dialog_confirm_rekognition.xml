@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
+        android:text="Iniciar verificación facial"
         android:textSize="24sp"
         android:fontFamily="@font/poppins_semibold"
         android:textColor="@color/ufps_texto_principal"
@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¿Estás seguro de que deseas cerrar sesión?\n\nTendrás que volver a iniciar sesión la próxima vez que abras la aplicación."
+        android:text="Ahora iniciaremos el proceso de reconocimiento facial utilizando Amazon Rekognition.\n\nAsegúrate de estar en un lugar con buena iluminación. Este proceso solo tomará unos segundos."
         android:textSize="14sp"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/ufps_texto_oscuro"
@@ -53,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cerrar sesión"
+            android:text="Continuar"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>

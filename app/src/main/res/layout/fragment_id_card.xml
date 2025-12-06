@@ -99,7 +99,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/profile_example_image"/>
+                            android:src="@drawable/no_image"/>
                     </androidx.cardview.widget.CardView>
 
                     <!-- Nombre del estudiante -->
@@ -108,7 +108,7 @@
                         android:id="@+id/tvStudentName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="DUKAGJIN LIPA\nANESA REXHA"
+                        tools:text="JUAN\nGARCÍA"
                         android:text=""
                         android:textSize="15sp"
                         android:textStyle="bold"
