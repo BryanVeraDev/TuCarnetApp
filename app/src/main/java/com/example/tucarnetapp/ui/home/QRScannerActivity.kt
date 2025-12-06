@@ -293,7 +293,7 @@ class QRScannerActivity : BaseActivity() {
     private fun showInvalidFormatError() {
         val now = System.currentTimeMillis()
 
-        // ⛔ evitar spam visual
+        // evitar spam visual
         if (now - lastErrorTime < ERROR_COOLDOWN_MS) return
 
         lastErrorTime = now

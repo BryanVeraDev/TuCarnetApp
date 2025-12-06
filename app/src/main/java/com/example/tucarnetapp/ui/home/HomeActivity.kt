@@ -2,6 +2,7 @@ package com.example.tucarnetapp.ui.home
 
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,6 +33,10 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Bloquea capturas de pantalla
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
         SnackRouter.deliver(this)

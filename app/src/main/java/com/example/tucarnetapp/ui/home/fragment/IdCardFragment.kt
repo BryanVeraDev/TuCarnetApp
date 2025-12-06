@@ -60,6 +60,8 @@ class IdCardFragment : Fragment() {
         hasShownHint = savedInstanceState?.getBoolean("has_shown_hint") ?: false
         // Inicializar QRPreferences
         qrPrefs = QRPreferences.getInstance(requireContext())
+
+
     }
 
     override fun onCreateView(
