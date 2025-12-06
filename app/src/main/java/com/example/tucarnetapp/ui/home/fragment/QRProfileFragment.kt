@@ -329,23 +329,19 @@ class QRProfileFragment : Fragment() {
             val fullName = "${currentUser.name} ${currentUser.last_name}"
             txtUserName.text = fullName
 
-            // Cargar foto de perfil si existe
-            currentUser.card_photo_key?.let { photoUrl ->
-                if (photoUrl.startsWith("http")) {
-                    // Si es URL, usar Glide (descomentar cuando agregues Glide)
-                    Glide.with(this).load(photoUrl).into(imgProfile)
-                } else if (photoUrl.startsWith("data:image")) {
-                    // Si es base64, convertir y mostrar
-                    val photoBitmap = base64ToBitmap(photoUrl)
-                    photoBitmap?.let { imgProfile.setImageBitmap(it) }
-                }
-            }
-
+            // ✅ Cargar foto de perfil de forma estándar
+            PhotoLoader.load(
+                context = requireContext(),
+                imageView = imgProfile,
+                photoKey = currentUser.card_photo_key
+            )
 
         } else {
             txtUserName.text = "Estudiante"
+            imgProfile.setImageResource(R.drawable.no_image)
         }
     }
+
 
     /**
      * Convierte base64 a Bitmap

@@ -40,6 +40,10 @@ class QRScannerActivity : BaseActivity() {
     private val PREF_NAME = "app_permissions"
     private val KEY_CAMERA_REQUESTED = "camera_requested"
 
+    private var lastErrorTime = 0L
+    private val ERROR_COOLDOWN_MS = 2000L
+
+
     // Formato esperado del QR
     companion object {
         private const val QR_PREFIX = "UFPSCARNET:"
@@ -287,6 +291,13 @@ class QRScannerActivity : BaseActivity() {
      * Muestra un error cuando el QR no tiene el formato correcto
      */
     private fun showInvalidFormatError() {
+        val now = System.currentTimeMillis()
+
+        // ⛔ evitar spam visual
+        if (now - lastErrorTime < ERROR_COOLDOWN_MS) return
+
+        lastErrorTime = now
+
         showSnack(
             "⚠️ Formato de QR no válido. Debe ser un carnet UFPS",
             Snackbar.LENGTH_SHORT,
@@ -294,11 +305,6 @@ class QRScannerActivity : BaseActivity() {
             R.color.ufps_error_claro,
             R.color.ufps_error_principal
         )
-
-        // Permitir escanear de nuevo inmediatamente
-        barcodeView.postDelayed({
-            isProcessing = false
-        }, 1000)
     }
 
     override fun onRequestPermissionsResult(
