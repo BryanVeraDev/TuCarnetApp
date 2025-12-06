@@ -27,7 +27,7 @@ interface LivenessApi {
     ): CompareFacesResponse
 
     // POST /liveness/photo
-    @POST("/liveness/photo")
+    @POST("/liveness/photo/upload")
     suspend fun uploadPhoto(
         @Body body: UploadPhotoRequest
     ): UploadPhotoResponse
@@ -39,8 +39,8 @@ interface LivenessApi {
     ): LivenessResultResponse
 
 
-    // GET /liveness/photo
-    @GET("/liveness/photo")
+    // POST /liveness/photo/signedUrl
+    @POST("/liveness/photo/signedUrl")
     suspend fun getPhoto(
         @Body body: GetPhotoRequest
     ): PhotoUrlResponse

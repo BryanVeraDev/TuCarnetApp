@@ -140,63 +140,16 @@ class IdCardFragment : Fragment() {
         }
     }
 
-    private fun loadProfilePhoto(photoUrl: String?) {
-        if (!photoUrl.isNullOrBlank()) {
-            if (photoUrl.startsWith("http")) {
-                // URL remota
-                Glide.with(this)
-                    .load(photoUrl)
-                    .placeholder(R.drawable.profile_example_image)
-                    .error(R.drawable.profile_example_image)
-                    .listener(object : com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable> {
-                        override fun onLoadFailed(
-                            e: com.bumptech.glide.load.engine.GlideException?,
-                            model: Any?,
-                            target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            isPhotoLoaded = true
-                            checkIfReadyToShow()
-                            //showContent()
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: android.graphics.drawable.Drawable,
-                            model: Any,
-                            target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>,
-                            dataSource: com.bumptech.glide.load.DataSource,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            isPhotoLoaded = true
-                            checkIfReadyToShow()
-                            //showContent()
-                            return false
-                        }
-                    })
-                    .into(ivProfilePhoto)
-            } else if (photoUrl.startsWith("data:image")) {
-                // Base64
-                val bitmap = base64ToBitmap(photoUrl)
-                if (bitmap != null) {
-                    ivProfilePhoto.setImageBitmap(bitmap)
-                }
-                isPhotoLoaded = true
-                checkIfReadyToShow()
-                //showContent()
-            } else {
-                isPhotoLoaded = true
-                checkIfReadyToShow()
-                //showContent()
-            }
-        } else {
-            ivProfilePhoto.setImageResource(R.drawable.no_image)
+    private fun loadProfilePhoto(photoKey: String?) {
+        PhotoLoader.load(
+            context = requireContext(),
+            imageView = ivProfilePhoto,
+            photoKey = photoKey
+        ) {
             isPhotoLoaded = true
             checkIfReadyToShow()
-            //showContent()
         }
     }
-
 
     private fun updateUI(data: StudentData) {
         tvStudentName.text = data.name

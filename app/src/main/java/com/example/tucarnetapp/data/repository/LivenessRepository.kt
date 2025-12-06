@@ -1,5 +1,6 @@
 package com.example.tucarnetapp.data.repository
 
+import com.example.tucarnetapp.data.cache.PhotoUrlMemoryCache
 import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesRequest
 import com.example.tucarnetapp.data.remote.dto.aws.CompareFacesResponse
@@ -29,17 +30,33 @@ class LivenessRepository {
     }
 
     /**
-     * GET /liveness/photo
+     * POST /liveness/photo/signedUrl
      */
     suspend fun getPhotoUrl(photoKey: String): PhotoUrlResponse {
-        val request = GetPhotoRequest(
-            photoKey = photoKey
+
+        // 1. Intentar cache en memoria
+        PhotoUrlMemoryCache.get(photoKey)?.let { cachedUrl ->
+            return PhotoUrlResponse(
+                url = cachedUrl
+            )
+        }
+
+        // 2. Llamada real al backend
+        val request = GetPhotoRequest(photoKey = photoKey)
+        val response = api.getPhoto(request)
+
+        // 3. Guardar en cache
+        PhotoUrlMemoryCache.put(
+            photoKey = photoKey,
+            url = response.url
         )
-        return api.getPhoto(request)
+
+        // 4. Retornar respuesta
+        return response
     }
 
     /**
-     * POST /liveness/photo
+     * POST /liveness/photo/upload
      */
     suspend fun uploadPhotoBase64(imageBase64: String): UploadPhotoResponse {
         val request = UploadPhotoRequest(

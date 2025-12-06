@@ -15,7 +15,10 @@ import android.util.Log
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.data.cache.PhotoUrlMemoryCache
+import com.example.tucarnetapp.data.repository.LivenessRepository
 import com.example.tucarnetapp.session.QRPreferences
 import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
@@ -33,6 +36,7 @@ class HomeFragment : Fragment() {
     lateinit var loadingOverlay: View
 
     private val auth = FirebaseAuth.getInstance()
+    private val repository = LivenessRepository()
 
     companion object {
         private const val TAG = "HomeFragment"
@@ -77,15 +81,16 @@ class HomeFragment : Fragment() {
             tvCareer.text = " ${user.career}"
             tvStatus.text = " ${user.status}"
 
-            // Cargar foto si existe
-            if (!user.card_photo_key.isNullOrBlank() && user.card_photo_key.startsWith("http")) {
-                Glide.with(requireContext())
-                    .load(user.card_photo_key)
-                    .placeholder(R.drawable.profile_example_image)
-                    .error(R.drawable.profile_example_image)
-                    .into(imgProfile)
-            } else {
-                imgProfile.setImageResource(R.drawable.no_image)
+            val photoKey = user.card_photo_key
+
+            Log.d("HOME FRAGMENT", "photo key: $photoKey")
+
+            if (!photoKey.isNullOrBlank()) {
+                PhotoLoader.load(
+                    requireContext(),
+                    imgProfile,
+                    photoKey
+                )
             }
         }
 
@@ -160,6 +165,9 @@ class HomeFragment : Fragment() {
                 // 4. Limpiar UserSession (memoria)
                 UserSession.clear()
                 Log.d(TAG, "✅ UserSession limpio")
+
+                // 4.1 Limpiar cache de URL firmada de la foto
+                PhotoUrlMemoryCache.clear()
 
                 // 5. Redirigir a HomeScreen
                 val intent = Intent(requireContext(), HomeScreenActivity::class.java)

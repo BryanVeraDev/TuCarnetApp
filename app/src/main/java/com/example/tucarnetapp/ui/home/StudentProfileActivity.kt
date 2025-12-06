@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.data.cache.PhotoUrlMemoryCache
 import com.example.tucarnetapp.ui.BaseActivity
 import com.google.android.material.button.MaterialButton
 
@@ -126,24 +127,11 @@ class StudentProfileActivity : BaseActivity() {
         textStatus.text = " ${formatStatus(status)}"
 
         // Cargar imagen del estudiante
-        if (!cardPhotoKey.isNullOrEmpty()) {
-            if (cardPhotoKey.startsWith("data:image")) {
-                // Cargar desde base64
-                val bitmap = base64ToBitmap(cardPhotoKey)
-                if (bitmap != null) {
-                    imgProfile.setImageBitmap(bitmap)
-                } else {
-                    imgProfile.setImageResource(R.drawable.profile_blank)
-                }
-            } else if (cardPhotoKey.startsWith("http")) {
-                // Cargar desde URL con Glide (si está disponible)
-                Glide.with(this).load(cardPhotoKey).error(R.drawable.profile_blank).into(imgProfile)
-            } else {
-                imgProfile.setImageResource(R.drawable.profile_blank)
-            }
-        } else {
-            imgProfile.setImageResource(R.drawable.profile_blank)
-        }
+        PhotoLoader.load(
+            context = this,
+            imageView = imgProfile,
+            photoKey = cardPhotoKey
+        )
     }
 
     private fun showInvalidStudent(reason: String) {
@@ -206,6 +194,7 @@ class StudentProfileActivity : BaseActivity() {
 
     private fun setupListeners() {
         btnLogout.setOnClickListener {
+            PhotoUrlMemoryCache.clear()
             finish() // Volver a la pantalla anterior
         }
     }
