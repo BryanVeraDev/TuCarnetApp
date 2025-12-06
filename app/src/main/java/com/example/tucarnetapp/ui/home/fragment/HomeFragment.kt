@@ -78,14 +78,14 @@ class HomeFragment : Fragment() {
             tvStatus.text = " ${user.status}"
 
             // Cargar foto si existe
-            if (!user.card_photo_url.isNullOrBlank() && user.card_photo_url.startsWith("http")) {
+            if (!user.card_photo_key.isNullOrBlank() && user.card_photo_key.startsWith("http")) {
                 Glide.with(requireContext())
-                    .load(user.card_photo_url)
+                    .load(user.card_photo_key)
                     .placeholder(R.drawable.profile_example_image)
                     .error(R.drawable.profile_example_image)
                     .into(imgProfile)
             } else {
-                imgProfile.setImageResource(R.drawable.profile_example_image)
+                imgProfile.setImageResource(R.drawable.no_image)
             }
         }
 

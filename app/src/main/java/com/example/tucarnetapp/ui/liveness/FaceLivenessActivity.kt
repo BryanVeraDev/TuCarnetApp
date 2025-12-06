@@ -77,7 +77,7 @@ class FaceLivenessActivity : ComponentActivity() {
 
             val response = try {
                 withContext(Dispatchers.IO) {
-                    repository.createLivenessSession()
+                    repository.startLiveness()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -130,20 +130,52 @@ class FaceLivenessActivity : ComponentActivity() {
                                 },
 
                             onComplete = {
-                                Log.i("Liveness", "Verificación completada")
-                                val intent = Intent(
-                                    this@FaceLivenessActivity,
-                                    LoadImageFirstActivity::class.java
-                                )
-                                SnackRouter.showNext(
-                                    message = "Verificación exitosa",
-                                    top = true,
-                                    backgroundColor = R.color.ufps_success_claro,
-                                    textColor = R.color.ufps_success_oscuro
-                                )
-                                startActivity(intent)
-                                finish()
-                            },
+                                Log.i("Liveness", "Verificación completada (UI)")
+
+                                lifecycleScope.launch {
+
+                                    val result = try {
+                                        waitForLivenessResult(sessionId)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        null
+                                    }
+
+                                    if (result == null) {
+                                        SnackRouter.showNext(
+                                            message = "No se pudo obtener el resultado de la verificación",
+                                            top = true,
+                                            backgroundColor = R.color.ufps_error_claro,
+                                            textColor = R.color.ufps_error_principal
+                                        )
+                                        finish()
+                                        return@launch
+                                    }
+
+                                    // ✅ RESULTADO LISTO
+                                    Log.d("DEBUG_LIVENESS", "Resultado final: $result")
+
+                                    val intent = Intent(
+                                        this@FaceLivenessActivity,
+                                        LoadImageFirstActivity::class.java
+                                    ).apply {
+                                        putExtra("photoKey", result.photoKey)
+                                        putExtra("confidenceScore", result.confidenceScore ?: 0.0)
+                                        putExtra("referenceImageBase64", result.referenceImageBase64)
+                                    }
+
+                                    SnackRouter.showNext(
+                                        message = "Verificación biométrica exitosa",
+                                        top = true,
+                                        backgroundColor = R.color.ufps_success_claro,
+                                        textColor = R.color.ufps_success_oscuro
+                                    )
+
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            }
+                            ,
 
                             onError = { error: FaceLivenessDetectionException ->
                                 Log.e("Liveness", "Error en verificación")
@@ -166,4 +198,24 @@ class FaceLivenessActivity : ComponentActivity() {
             }
         }
     }
+
+    private suspend fun waitForLivenessResult(sessionId: String) =
+        withContext(Dispatchers.IO) {
+
+            repeat(10) { // intenta hasta 10 veces (≈20s)
+                val result = repository.getLivenessResult(sessionId)
+
+                Log.d("DEBUG_LIVENESS", "Estado liveness: ${result.status}")
+
+                if (result.status == "done") {
+                    return@withContext result
+                }
+
+                // esperar 2 segundos antes de volver a consultar
+                kotlinx.coroutines.delay(2000)
+            }
+
+            null // timeout
+        }
+
 }

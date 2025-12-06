@@ -132,7 +132,7 @@ class IdCardFragment : Fragment() {
             updateUI(studentData)
 
             // Cargar foto
-            loadProfilePhoto(user.card_photo_url)
+            loadProfilePhoto(user.card_photo_key)
         } else {
             isPhotoLoaded = true
             checkIfReadyToShow()
@@ -190,7 +190,7 @@ class IdCardFragment : Fragment() {
                 //showContent()
             }
         } else {
-            ivProfilePhoto.setImageResource(R.drawable.profile_example_image)
+            ivProfilePhoto.setImageResource(R.drawable.no_image)
             isPhotoLoaded = true
             checkIfReadyToShow()
             //showContent()
