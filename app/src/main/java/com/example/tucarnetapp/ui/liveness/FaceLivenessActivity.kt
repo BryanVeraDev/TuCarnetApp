@@ -1,6 +1,7 @@
 package com.example.tucarnetapp.ui.liveness
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,10 @@ import com.amplifyframework.ui.liveness.model.FaceLivenessDetectionException
 import com.amplifyframework.ui.liveness.ui.FaceLivenessDetector
 import com.amplifyframework.ui.liveness.ui.LivenessColorScheme
 import com.example.tucarnetapp.data.repository.LivenessRepository
+import com.example.tucarnetapp.ui.home.LoadImageFirstActivity
+import com.example.tucarnetapp.utils.SnackRouter
+import com.example.tucarnetapp.R
+import com.example.tucarnetapp.ui.home.HomeScreenActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,6 +57,7 @@ class FaceLivenessActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SnackRouter.deliver(this)
         enableEdgeToEdge()
         checkPermissions()
     }
@@ -118,20 +124,40 @@ class FaceLivenessActivity : ComponentActivity() {
                                             onSuccess.accept(awsCreds)
 
                                         } catch (e: Exception) {
-                                            onError.accept(AuthException("Credenciales inválidas", "Hola"))
+                                            onError.accept(AuthException("Credenciales inválidas", "Credenciales inválidas"))
                                         }
                                     }
                                 },
 
                             onComplete = {
                                 Log.i("Liveness", "Verificación completada")
-                                Toast.makeText(this@FaceLivenessActivity, "Verificación exitosa", Toast.LENGTH_LONG).show()
+                                val intent = Intent(
+                                    this@FaceLivenessActivity,
+                                    LoadImageFirstActivity::class.java
+                                )
+                                SnackRouter.showNext(
+                                    message = "Verificación exitosa",
+                                    top = true,
+                                    backgroundColor = R.color.ufps_success_claro,
+                                    textColor = R.color.ufps_success_oscuro
+                                )
+                                startActivity(intent)
                                 finish()
                             },
 
                             onError = { error: FaceLivenessDetectionException ->
                                 Log.e("Liveness", "Error en verificación")
-                                Toast.makeText(this@FaceLivenessActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()
+                                val intent = Intent(
+                                    this@FaceLivenessActivity,
+                                    HomeScreenActivity::class.java
+                                )
+                                SnackRouter.showNext(
+                                    message = "Error en verificación",
+                                    top = true,
+                                    backgroundColor = R.color.ufps_error_claro,
+                                    textColor = R.color.ufps_error_principal
+                                )
+                                startActivity(intent)
                                 finish()
                             }
                         )

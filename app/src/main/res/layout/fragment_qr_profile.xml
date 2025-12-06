@@ -80,7 +80,7 @@
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/profile_example_image" />
+                        android:src="@drawable/no_image" />
 
                     <!-- Nombre del usuario -->
                     <TextView
@@ -88,7 +88,7 @@
                         android:id="@+id/txtUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dua Lipa"
+                        android:text="Juan García"
                         android:layout_marginBottom="2dp" />
 
                     <!-- Timer del QR -->
