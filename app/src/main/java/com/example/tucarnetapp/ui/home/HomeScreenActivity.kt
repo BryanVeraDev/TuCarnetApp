@@ -486,7 +486,9 @@ class HomeScreenActivity : BaseActivity() {
                 textColor = R.color.ufps_error_principal
             )
 
-            openAppSettings()
+            Handler(Looper.getMainLooper()).postDelayed({
+                openAppSettings()
+            }, 2000)
         } else {
             // 🔁 Reintentar mostrar el diálogo
             showSnack(
