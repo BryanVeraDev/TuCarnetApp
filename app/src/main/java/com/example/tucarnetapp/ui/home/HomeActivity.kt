@@ -34,8 +34,9 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Bloquea capturas de pantalla
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        // Bloquea capturas de pantalla (Para el activity en general)
+        setScreenshotsBlocked(true)
+        //window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
@@ -173,4 +174,5 @@ class HomeActivity : BaseActivity() {
         super.onInternetLost()
         Log.d(TAG, "❌ Internet perdido")
     }
+
 }
