@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:title="¡Hola, Dua Lipa!"
+            app:title="¡Hola, Juan García!"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextTitle" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -65,7 +65,7 @@
                         android:background="@drawable/rounded_image"
                         android:clipToOutline="true"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/profile_example_image" />
+                        android:src="@drawable/no_image" />
 
                     <!-- Botón editar -->
                     <com.google.android.material.button.MaterialButton
@@ -101,7 +101,7 @@
                             android:id="@+id/textName"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text=" Dua Lipa"
+                            android:text=" Juan García"
                             style="@style/TextGeneral" />
                     </LinearLayout>
 

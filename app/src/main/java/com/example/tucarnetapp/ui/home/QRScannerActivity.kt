@@ -28,8 +28,9 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import kotlinx.coroutines.launch
 import com.example.tucarnetapp.data.remote.dto.StudentValidationData
+import com.example.tucarnetapp.ui.BaseActivity
 
-class QRScannerActivity : AppCompatActivity() {
+class QRScannerActivity : BaseActivity() {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var flashlightButton: ImageButton
@@ -38,6 +39,10 @@ class QRScannerActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_CODE = 1001
     private val PREF_NAME = "app_permissions"
     private val KEY_CAMERA_REQUESTED = "camera_requested"
+
+    private var lastErrorTime = 0L
+    private val ERROR_COOLDOWN_MS = 2000L
+
 
     // Formato esperado del QR
     companion object {
@@ -205,7 +210,7 @@ class QRScannerActivity : AppCompatActivity() {
 
                     if (validationResponse.valid && validationResponse.student != null) {
                         // ✅ QR válido
-                        val student = "${validationResponse.student.card_photo_url}"
+                        val student = "${validationResponse.student.card_photo_key}"
                         Log.d(TAG, student)
                         handleValidQR(validationResponse.student)
                     } else {
@@ -254,7 +259,7 @@ class QRScannerActivity : AppCompatActivity() {
             putExtra("STUDENT_CAREER", student.career)
             putExtra("STUDENT_STATUS", student.status)
             putExtra("STUDENT_TYPE", student.student_type)
-            putExtra("CARD_PHOTO_URL", student.card_photo_url)
+            putExtra("CARD_PHOTO_KEY", student.card_photo_key)
             putExtra("IS_VALIDATED", true)
         }
 
@@ -286,6 +291,13 @@ class QRScannerActivity : AppCompatActivity() {
      * Muestra un error cuando el QR no tiene el formato correcto
      */
     private fun showInvalidFormatError() {
+        val now = System.currentTimeMillis()
+
+        // evitar spam visual
+        if (now - lastErrorTime < ERROR_COOLDOWN_MS) return
+
+        lastErrorTime = now
+
         showSnack(
             "⚠️ Formato de QR no válido. Debe ser un carnet UFPS",
             Snackbar.LENGTH_SHORT,
@@ -293,11 +305,6 @@ class QRScannerActivity : AppCompatActivity() {
             R.color.ufps_error_claro,
             R.color.ufps_error_principal
         )
-
-        // Permitir escanear de nuevo inmediatamente
-        barcodeView.postDelayed({
-            isProcessing = false
-        }, 1000)
     }
 
     override fun onRequestPermissionsResult(
@@ -337,5 +344,15 @@ class QRScannerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (::barcodeView.isInitialized) barcodeView.pause()
+    }
+
+    override fun onInternetAvailable() {
+        super.onInternetAvailable()
+        Log.d(TAG, "✅ Internet restaurado")
+    }
+
+    override fun onInternetLost() {
+        super.onInternetLost()
+        Log.d(TAG, "❌ Internet perdido")
     }
 }

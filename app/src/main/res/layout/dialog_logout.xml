@@ -38,7 +38,7 @@
         <!-- Botón Cancelar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancel"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/PrincipalWhiteButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -49,12 +49,11 @@
         <!-- Botón Confirmar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirm"
+            style="@style/PrincipalRedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cerrar sesión"
-            android:backgroundTint="@color/ufps_principal"
-            android:textColor="@color/white"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,9 +14,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.data.cache.PhotoUrlMemoryCache
+import com.example.tucarnetapp.ui.BaseActivity
 import com.google.android.material.button.MaterialButton
 
-class StudentProfileActivity : AppCompatActivity() {
+class StudentProfileActivity : BaseActivity() {
 
     private lateinit var textValidationMessage: TextView
     private lateinit var imgProfile: ImageView
@@ -25,6 +28,10 @@ class StudentProfileActivity : AppCompatActivity() {
     private lateinit var textStatus: TextView
     private lateinit var btnLogout: MaterialButton
     private lateinit var infoContainer: View
+
+    companion object {
+        private const val TAG = "StudentProfile"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +75,7 @@ class StudentProfileActivity : AppCompatActivity() {
         val career = intent.getStringExtra("STUDENT_CAREER") ?: ""
         val status = intent.getStringExtra("STUDENT_STATUS") ?: ""
         val studentType = intent.getStringExtra("STUDENT_TYPE") ?: ""
-        val cardPhotoUrl = intent.getStringExtra("CARD_PHOTO_URL")
+        val cardPhotoKey = intent.getStringExtra("CARD_PHOTO_KEY")
 
         // Validar que tengamos los datos mínimos
         if (studentCode.isNullOrEmpty() || name.isNullOrEmpty()) {
@@ -84,7 +91,7 @@ class StudentProfileActivity : AppCompatActivity() {
             career = career ?: "N/A",
             status = status ?: "N/A",
             studentType = studentType,
-            cardPhotoUrl = cardPhotoUrl
+            cardPhotoKey = cardPhotoKey
         )
     }
 
@@ -100,7 +107,7 @@ class StudentProfileActivity : AppCompatActivity() {
         career: String,
         status: String,
         studentType: String?,
-        cardPhotoUrl: String?
+        cardPhotoKey: String?
     ) {
         // Configurar mensaje de validación exitosa
         textValidationMessage.apply {
@@ -120,24 +127,11 @@ class StudentProfileActivity : AppCompatActivity() {
         textStatus.text = " ${formatStatus(status)}"
 
         // Cargar imagen del estudiante
-        if (!cardPhotoUrl.isNullOrEmpty()) {
-            if (cardPhotoUrl.startsWith("data:image")) {
-                // Cargar desde base64
-                val bitmap = base64ToBitmap(cardPhotoUrl)
-                if (bitmap != null) {
-                    imgProfile.setImageBitmap(bitmap)
-                } else {
-                    imgProfile.setImageResource(R.drawable.profile_blank)
-                }
-            } else if (cardPhotoUrl.startsWith("http")) {
-                // Cargar desde URL con Glide (si está disponible)
-                Glide.with(this).load(cardPhotoUrl).error(R.drawable.profile_blank).into(imgProfile)
-            } else {
-                imgProfile.setImageResource(R.drawable.profile_blank)
-            }
-        } else {
-            imgProfile.setImageResource(R.drawable.profile_blank)
-        }
+        PhotoLoader.load(
+            context = this,
+            imageView = imgProfile,
+            photoKey = cardPhotoKey
+        )
     }
 
     private fun showInvalidStudent(reason: String) {
@@ -200,8 +194,19 @@ class StudentProfileActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         btnLogout.setOnClickListener {
+            PhotoUrlMemoryCache.clear()
             finish() // Volver a la pantalla anterior
         }
+    }
+
+    override fun onInternetAvailable() {
+        super.onInternetAvailable()
+        Log.d(TAG, "✅ Internet restaurado")
+    }
+
+    override fun onInternetLost() {
+        super.onInternetLost()
+        Log.d(TAG, "❌ Internet perdido")
     }
 
 }
