@@ -1,6 +1,7 @@
 package com.example.tucarnetapp.ui.home
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -64,6 +65,7 @@ class HomeScreenActivity : BaseActivity() {
         setupButtons()
         setupBackPress()
         setupWindowInsets()
+        requestRequiredPermissions()
 
         // Verifica si ya hay sesión activa
         //checkExistingSession()
@@ -80,11 +82,34 @@ class HomeScreenActivity : BaseActivity() {
     }
 
     private fun setupButtons() {
+
         startButton.setOnClickListener {
+            if (!hasAllPermissions()) {
+                showSnack(
+                    message = "Debes aceptar los permisos para iniciar sesión",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
+                requestRequiredPermissions()
+                return@setOnClickListener
+            }
+
             signIn()
         }
 
         scannerButton.setOnClickListener {
+            if (!hasAllPermissions()) {
+                showSnack(
+                    message = "Debes aceptar los permisos para usar el escáner",
+                    top = true,
+                    backgroundColor = R.color.ufps_error_claro,
+                    textColor = R.color.ufps_error_principal
+                )
+                requestRequiredPermissions()
+                return@setOnClickListener
+            }
+
             requireInternet {
                 val intent = Intent(this, QRScannerActivity::class.java)
                 startActivity(intent)
@@ -438,4 +463,97 @@ class HomeScreenActivity : BaseActivity() {
             scannerButton.isEnabled = false
         }
     }
+
+    // ---- PARA PEDIR PERMISOS ---
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+
+        val cameraGranted = permissions[android.Manifest.permission.CAMERA] ?: false
+        val audioGranted = permissions[android.Manifest.permission.RECORD_AUDIO] ?: false
+
+        if (cameraGranted && audioGranted) {
+            Log.d(TAG, "✅ Permisos concedidos")
+            return@registerForActivityResult
+        }
+
+        // ❌ Permisos rechazados
+        if (permissionsPermanentlyDenied()) {
+            showSnack(
+                message = "Los permisos fueron bloqueados. Actívalos desde Ajustes",
+                top = true,
+                backgroundColor = R.color.ufps_error_claro,
+                textColor = R.color.ufps_error_principal
+            )
+
+            openAppSettings()
+        } else {
+            // 🔁 Reintentar mostrar el diálogo
+            showSnack(
+                message = "Los permisos son necesarios para continuar",
+                top = true,
+                backgroundColor = R.color.ufps_error_claro,
+                textColor = R.color.ufps_error_principal
+            )
+
+            // volver a mostrar el launcher
+            Handler(Looper.getMainLooper()).postDelayed({
+                requestRequiredPermissions()
+            }, 500)
+        }
+    }
+
+
+    private fun hasAllPermissions(): Boolean {
+        val camera = checkSelfPermission(android.Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED
+
+        val audio = checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED
+
+        return camera && audio
+    }
+
+    private fun requestRequiredPermissions() {
+        val permissions = mutableListOf<String>()
+
+        if (checkSelfPermission(android.Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(android.Manifest.permission.CAMERA)
+        }
+
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(android.Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (permissions.isNotEmpty()) {
+            permissionLauncher.launch(permissions.toTypedArray())
+        }
+    }
+
+    private fun permissionsPermanentlyDenied(): Boolean {
+        val cameraDenied = shouldShowRequestPermissionRationale(
+            android.Manifest.permission.CAMERA
+        ).not()
+
+        val audioDenied = shouldShowRequestPermissionRationale(
+            android.Manifest.permission.RECORD_AUDIO
+        ).not()
+
+        return cameraDenied || audioDenied
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(
+            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        ).apply {
+            data = android.net.Uri.fromParts("package", packageName, null)
+        }
+        startActivity(intent)
+    }
+
+
+
+
 }
