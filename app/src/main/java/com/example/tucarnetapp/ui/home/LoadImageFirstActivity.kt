@@ -391,9 +391,10 @@ class LoadImageFirstActivity : AppCompatActivity() {
 
         val options = UCrop.Options().apply {
             setCompressionQuality(90)
-            setToolbarColor(getColor(R.color.ufps_principal))
-            setActiveControlsWidgetColor(getColor(R.color.ufps_principal))
+            setToolbarTitle("Recorta tu foto")
             setFreeStyleCropEnabled(false)
+            setToolbarColor(getColor(R.color.ufps_principal))
+            setToolbarWidgetColor(getColor(android.R.color.white))
         }
 
         val uCrop = UCrop.of(sourceUri, destUri)
