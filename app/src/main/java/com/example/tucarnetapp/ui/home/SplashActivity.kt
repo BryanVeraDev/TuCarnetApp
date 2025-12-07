@@ -10,6 +10,7 @@ import com.example.tucarnetapp.data.remote.ApiClient
 import com.example.tucarnetapp.data.remote.dto.AuthRequest
 import com.example.tucarnetapp.session.SessionManager
 import com.example.tucarnetapp.session.UserSession
+import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.ui.home.HomeScreenActivity
 import com.example.tucarnetapp.ui.home.LoadingActivity
 import com.example.tucarnetapp.ui.terms.TermsConditionsActivity
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     private lateinit var sessionManager: SessionManager
@@ -67,8 +68,19 @@ class SplashActivity : AppCompatActivity() {
 
             // Caso 3: Hay sesión guardada → Restaurar
             sessionManager.isLoggedIn() && sessionManager.hasCompleteData() -> {
-                Log.d(TAG, "✅ Sesión válida → Restaurando")
-                restoreSession()
+                val student = sessionManager.getStudent()
+                val currentStatus = student?.biometric_profile?.status
+
+                Log.d(TAG, "✅ Sesión local encontrada - Estado: $currentStatus")
+
+                // Solo revalidar si el estado NO es APROBADO
+                if (currentStatus != "APROBADO") {
+                    Log.d(TAG, "🔄 Estado pendiente/rechazado → Revalidando con backend")
+                    revalidateSession()
+                } else {
+                    Log.d(TAG, "✅ Usuario ya aprobado → Usando sesión local")
+                    restoreSession()
+                }
             }
 
             // Caso 4: Usuario Firebase pero sin sesión local → Reautenticar
@@ -76,6 +88,65 @@ class SplashActivity : AppCompatActivity() {
                 Log.d(TAG, "🔄 Usuario Firebase sin sesión local → Reautenticar")
                 reAuthenticate()
             }
+        }
+    }
+
+    /**
+    * Revalida la sesión con el backend
+    * Solo se llama cuando el estado NO es APROBADO
+    */
+    private suspend fun revalidateSession() {
+        val firebaseUser = auth.currentUser
+
+        if (firebaseUser == null) {
+            goToLogin()
+            return
+        }
+
+        try {
+            Log.d(TAG, "🔐 Obteniendo token para revalidación...")
+            val firebaseToken = FirebaseTokenHelper.getValidToken()
+
+            if (firebaseToken == null) {
+                Log.e(TAG, "❌ Token inválido → Usando datos locales")
+                // Fallback: usar datos locales si no hay conexión
+                restoreSession()
+                return
+            }
+
+            Log.d(TAG, "📡 Revalidando con backend...")
+            val request = AuthRequest(
+                uid = firebaseUser.uid,
+                email = firebaseUser.email ?: "",
+                name = firebaseUser.displayName ?: ""
+            )
+
+            val response = ApiClient.authApi.login(
+                authHeader = "Bearer $firebaseToken",
+                request = request
+            )
+
+            if (response.isSuccessful && response.body() != null) {
+                val student = response.body()!!
+
+                Log.d(TAG, "✅ Estado actualizado desde backend: ${student.biometric_profile?.status}")
+
+                // Actualizar sesión con datos frescos
+                sessionManager.saveStudent(student)
+                sessionManager.updateLastAccess()
+                UserSession.setUser(student)
+
+                // Redirigir con el estado más reciente
+                redirectBasedOnStatus(student.biometric_profile?.status)
+            } else {
+                Log.e(TAG, "⚠️ Error revalidando (${response.code()}) → Usando datos locales")
+                restoreSession()
+            }
+
+        } catch (e: Exception) {
+            Log.e(TAG, "⚠️ Error de red: ${e.message} → Usando datos locales")
+            // Si hay error de red, usa los datos locales
+            restoreSession()
         }
     }
 

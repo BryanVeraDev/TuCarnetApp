@@ -9,211 +9,239 @@
     android:background="#FCFCFC"
     tools:context=".ui.home.fragment.IdCardFragment">
 
-    <!-- Card Container -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardCarnet"
+    <!-- CONTENIDO SCROLLEABLE (carnet + logo) -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cardScroll"
         android:layout_width="0dp"
-        android:layout_height="550dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="50dp"
-        app:cardCornerRadius="35dp"
-        app:cardElevation="4dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/backgroundLogo"
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="true"
-            android:clipToPadding="true"
-            android:background="@android:color/white">
-
-            <!-- Contenedor para las elipses superiores con clip -->
-            <View
-                android:id="@+id/topWavesBackground"
-                android:layout_width="0dp"
-                android:layout_height="160dp"
-                android:background="@drawable/top_waves_combined"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- Ola gris decorativa media -->
-            <ImageView
-                android:id="@+id/grayWave"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:src="@drawable/bg_gray_wave"
-                android:scaleType="fitXY"
-                android:layout_marginTop="220dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- Profile Circle Container -->
-            <View
-                android:id="@+id/redCircleBg"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:background="@drawable/profile_placeholder"
-                android:layout_marginTop="80dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardProfile"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                app:cardCornerRadius="120dp"
-                app:cardElevation="4dp"
-                android:layout_marginTop="90dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <ImageView
-                    android:id="@+id/ivProfilePhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profile_example_image"/>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Student Name -->
-            <TextView
-                style="@style/DefaultText"
-                android:id="@+id/tvStudentName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="DUKAGJIN LIPA\nANESA REXHA"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:layout_marginTop="18dp"
-                app:layout_constraintTop_toBottomOf="@id/cardProfile"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- Student Code -->
-            <TextView
-                style="@style/DefaultText"
-                android:id="@+id/tvStudentCode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="CÓDIGO : 1152810"
-                android:textSize="13sp"
-                android:textColor="#000000"
-                android:layout_marginTop="6dp"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentName"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- Student Carrera -->
-            <TextView
-                style="@style/DefaultText"
-                android:id="@+id/tvStudentCarrera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="CARRERA: Ing Sistemas"
-                android:textSize="13sp"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCode"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- FrameLayout para contener todas las capas de ondas inferiores -->
-            <FrameLayout
-                android:id="@+id/bottomWavesContainer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:clipChildren="true"
-                android:clipToPadding="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera">
-
-                <!-- Onda superior izquierda (primera capa) -->
-                <ImageView
-                    android:id="@+id/ivBottomWaveTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_gravity="top"
-                    android:scaleType="fitXY"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/wave_bottom_left"
-                    android:layout_marginTop="38dp"/>
-
-                <!-- Ondas inferiores combinadas (capas 2 y 3) -->
-                <ImageView
-                    android:id="@+id/ivBottomWaves"
-                    android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:layout_gravity="bottom"
-                    android:scaleType="fitXY"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/wave_bottom_right"/>
-
-                <!-- Student Type Label encima de todo -->
-                <TextView
-                    style="@style/DefaultText"
-                    android:id="@+id/tvStudentType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="ESTUDIANTE"
-                    android:textSize="19sp"
-                    android:textColor="#FFFFFF"
-                    android:shadowColor="#000000"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="20dp"/>
-            </FrameLayout>
-
-            <!-- QR Code Container - DEBE IR DESPUÉS DEL FRAMELAYOUT PARA QUEDAR ENCIMA -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardQR"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <ImageView
-                    android:id="@+id/ivQRCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="8dp"
-                    android:src="@drawable/qr_placeholder"
-                    android:scaleType="fitCenter"/>
-            </androidx.cardview.widget.CardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- 🔴 LOGO ANCLADO AL FONDO (MARCA DE AGUA) -->
-    <ImageView
-        android:id="@+id/backgroundLogo"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:src="@drawable/icon_recable_logo"
-        android:scaleType="centerInside"
-        android:layout_marginBottom="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Contenedor del contenido del scroll -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Card Container (DISEÑO ORIGINAL DEL CARNET) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCarnet"
+                android:layout_width="0dp"
+                android:layout_height="550dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="50dp"
+                app:cardCornerRadius="35dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/backgroundLogo">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="true"
+                    android:clipToPadding="true"
+                    android:background="@android:color/white">
+
+                    <!-- Fondo superior con ondas -->
+                    <!-- Fondo superior con ondas dinámicas -->
+                    <com.example.tucarnetapp.ui.view.TopWavesView
+                        android:id="@+id/topWavesBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="160dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+
+                    <!-- Ola gris decorativa media -->
+                    <ImageView
+                        android:id="@+id/grayWave"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/bg_gray_wave"
+                        android:scaleType="fitXY"
+                        android:layout_marginTop="220dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <!-- Círculo rojo de fondo para el perfil -->
+                    <View
+                        android:id="@+id/redCircleBg"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:background="@drawable/profile_placeholder"
+                        android:layout_marginTop="80dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <!-- Foto de perfil dentro de CardView redondo -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardProfile"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:layout_marginTop="90dp"
+                        app:cardCornerRadius="120dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivProfilePhoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/no_image"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Nombre del estudiante -->
+                    <TextView
+                        style="@style/DefaultText"
+                        android:id="@+id/tvStudentName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="JUAN\nGARCÍA"
+                        android:text=""
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:gravity="center"
+                        android:layout_marginTop="18dp"
+                        app:layout_constraintTop_toBottomOf="@id/cardProfile"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <!-- Código del estudiante -->
+                    <TextView
+                        style="@style/DefaultText"
+                        android:id="@+id/tvStudentCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="CÓDIGO : 1152810"
+                        android:text=""
+                        android:textSize="13sp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="6dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvStudentName"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <!-- Carrera del estudiante -->
+                    <TextView
+                        style="@style/DefaultText"
+                        android:id="@+id/tvStudentCarrera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="CARRERA: Ing Sistemas"
+                        android:text=""
+                        android:textSize="13sp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="4dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvStudentCode"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <!-- Contenedor inferior de ondas y tipo de estudiante -->
+                    <FrameLayout
+                        android:id="@+id/bottomWavesContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:clipChildren="true"
+                        android:clipToPadding="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera">
+
+                        <!-- Onda superior izquierda (primera capa) -->
+                        <ImageView
+                            android:id="@+id/ivBottomWaveTop"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:layout_gravity="top"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/wave_bottom_left"
+                            android:layout_marginTop="38dp"/>
+
+                        <!-- Ondas inferiores combinadas (segunda capa) -->
+                        <ImageView
+                            android:id="@+id/ivBottomWaves"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_gravity="bottom"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/wave_bottom_right"/>
+
+                        <!-- Tipo de estudiante (texto blanco sobre ondas) -->
+                        <TextView
+                            style="@style/DefaultText"
+                            android:id="@+id/tvStudentType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="ESTUDIANTE"
+                            android:text=""
+                            android:textSize="19sp"
+                            android:textColor="#FFFFFF"
+                            android:shadowColor="#000000"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="2"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:layout_marginBottom="20dp"/>
+                    </FrameLayout>
+
+                    <!-- Contenedor del código QR (sobrepuesto) -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardQR"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_marginTop="40dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvStudentCarrera"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivQRCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="8dp"
+                            android:src="@drawable/qr_placeholder"
+                            android:scaleType="fitCenter"/>
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- LOGO DE FONDO (MARCA DE AGUA) DENTRO DEL CONTENIDO SCROLLEABLE -->
+            <ImageView
+                android:id="@+id/backgroundLogo"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@drawable/icon_recable_logo"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Overlay de carga sobre todo el contenido -->
     <include
-        layout="@layout/loading_overlay" />
+        layout="@layout/loading_overlay"
+        android:visibility="gone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

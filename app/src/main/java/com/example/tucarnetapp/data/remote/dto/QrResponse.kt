@@ -15,7 +15,7 @@ data class StudentValidationData(
     val career: String,
     val status: String,           // MATRICULADO o NO_ACTIVO
     val student_type: String,     // PREGRADO o POSGRADO
-    val card_photo_url: String?
+    val card_photo_key: String?
 )
 data class ValidateQRResponse(
     val valid: Boolean,

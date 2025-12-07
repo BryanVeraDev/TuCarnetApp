@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.tucarnetapp.R
 import com.example.tucarnetapp.session.QRPreferences
 import com.example.tucarnetapp.session.UserSession
+import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.viewmodel.QRViewModel
 import com.example.tucarnetapp.utils.showSnack
 import com.example.tucarnetapp.viewmodel.QRState
@@ -91,8 +92,8 @@ class QRProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? BaseActivity)?.setScreenshotsBlocked(true)
         initViews(view)
-
         setupAppBar()
         loadQRCode()
         loadStudentInfo()
@@ -160,7 +161,7 @@ class QRProfileFragment : Fragment() {
             qrViewModel.qrState.collect { state ->
                 when (state) {
                     is QRState.Loading -> {
-                        progressBar.visibility = View.VISIBLE
+                        //progressBar.visibility = View.VISIBLE
                         txtQRStatus.text = "Renovando código..."
                         txtQRStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), R.color.ufps_texto_oscuro)
@@ -328,23 +329,19 @@ class QRProfileFragment : Fragment() {
             val fullName = "${currentUser.name} ${currentUser.last_name}"
             txtUserName.text = fullName
 
-            // Cargar foto de perfil si existe
-            currentUser.card_photo_url?.let { photoUrl ->
-                if (photoUrl.startsWith("http")) {
-                    // Si es URL, usar Glide (descomentar cuando agregues Glide)
-                    Glide.with(this).load(photoUrl).into(imgProfile)
-                } else if (photoUrl.startsWith("data:image")) {
-                    // Si es base64, convertir y mostrar
-                    val photoBitmap = base64ToBitmap(photoUrl)
-                    photoBitmap?.let { imgProfile.setImageBitmap(it) }
-                }
-            }
-
+            // ✅ Cargar foto de perfil de forma estándar
+            PhotoLoader.load(
+                context = requireContext(),
+                imageView = imgProfile,
+                photoKey = currentUser.card_photo_key
+            )
 
         } else {
             txtUserName.text = "Estudiante"
+            imgProfile.setImageResource(R.drawable.no_image)
         }
     }
+
 
     /**
      * Convierte base64 a Bitmap
@@ -367,6 +364,7 @@ class QRProfileFragment : Fragment() {
 
 
     override fun onDestroyView() {
+        (activity as? BaseActivity)?.setScreenshotsBlocked(false)
         super.onDestroyView()
         // Cancelar el timer automáticamente
         timerJob?.cancel()

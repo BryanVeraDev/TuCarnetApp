@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verificación de identidad"
+        android:textSize="22sp"
+        android:fontFamily="@font/poppins_semibold"
+        android:textColor="@color/ufps_texto_principal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Mensaje -->
+    <TextView
+        android:id="@+id/dialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Debes subir una foto que coincida con la imagen detectada por Amazon Rekognition.\n\nTienes 3 intentos disponibles. Si ninguno coincide, volverás automáticamente a la pantalla de inicio."
+        android:textSize="15sp"
+        android:fontFamily="@font/poppins_regular"
+        android:textColor="@color/ufps_texto_oscuro"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Botón Cerrar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
+            style="@style/PrincipalRedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Entendido"
+            android:layout_marginEnd="8dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

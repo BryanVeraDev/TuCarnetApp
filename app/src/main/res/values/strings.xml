@@ -19,4 +19,87 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_share_qr_profile">Comparte tu código QR para verificar</string>
     <string name="default_web_client_id" translatable="false">50374384171-ucan0t9d2trgm8rlp8u0c6edig63k1q6.apps.googleusercontent.com</string>
+
+    <!-- Liveness strings -->
+    <string name="amplify_ui_liveness_challenge_a11y_cancel_content_description">
+        Cancelar verificación
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_connecting">
+        Conectando
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_instruction_hold_face_during_freshness">
+        Mantén tu rostro quieto
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_instruction_move_face">
+        Mueve tu rostro frente a la cámara
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_instruction_move_face_closer">
+        Acércate un poco
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_instruction_move_face_further">
+        Aléjate un poco
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_instruction_multiple_faces_detected">
+        Solo un rostro permitido por verificación
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_recording_indicator_label">
+        GRAB
+    </string>
+
+    <string name="amplify_ui_liveness_challenge_verifying">
+        Verificando
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_a11y_photosensitivity_icon_content_description">
+        Información sobre fotosensibilidad
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_begin_check">
+        Iniciar verificación en video
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_center_face_label">
+        Centra tu rostro
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_photosensitivity_description">
+        Esta verificación muestra luces de diferentes colores. Ten precaución si eres fotosensible.
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_photosensitivity_dialog_description">
+        Algunas personas pueden experimentar convulsiones al exponerse a luces de colores. Ten precaución si tú o alguien de tu familia tiene epilepsia.
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_photosensitivity_dialog_dismiss">
+        Entendido
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_photosensitivity_dialog_title">
+        Advertencia de fotosensibilidad
+    </string>
+
+    <string name="amplify_ui_liveness_get_ready_photosensitivity_title">
+        Advertencia de fotosensibilidad
+    </string>
+
+    <!-- UCrop -->
+    <!-- UCrop strings override -->
+    <string name="ucrop_label_edit_photo">Editar foto</string>
+    <string name="ucrop_menu_crop">Recortar</string>
+
+    <string name="ucrop_error_input_data_is_absent">No se encontró la imagen.</string>
+
+
+    <string name="ucrop_rotate">Rotar</string>
+    <string name="ucrop_scale">Escala</string>
+    <string name="ucrop_crop">Recortar</string>
+
+
 </resources>
