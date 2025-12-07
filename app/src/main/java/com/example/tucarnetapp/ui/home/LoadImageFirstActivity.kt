@@ -191,7 +191,7 @@ class LoadImageFirstActivity : AppCompatActivity() {
                 Log.d(TAG, "URI Foto: $selectedBase64")
 
                 var s3Key = ""
-
+                val user = UserSession.currentUser
                 if (isApproved) {
                     Log.d(TAG, "Similarity > 90 → subir foto a S3 (simulado)")
                     try {
@@ -201,6 +201,16 @@ class LoadImageFirstActivity : AppCompatActivity() {
                         Log.d(TAG, "Respuesta del backend: $response")
 
                         s3Key = response.photoKey
+
+                        if(user != null && s3Key.isNotBlank()){
+                            val updatedUser = user.copy(
+                                card_photo_key = s3Key
+                            )
+
+                            UserSession.setUser(updatedUser)
+
+                            Log.d(TAG, "✅ UserSession actualizada con photoKey")
+                        }
 
                     } catch (e: Exception) {
                         if (e is retrofit2.HttpException) {
@@ -231,7 +241,7 @@ class LoadImageFirstActivity : AppCompatActivity() {
                     Log.d(TAG, "Similarity < 90 → NO se sube foto")
                 }
 
-                val user = UserSession.currentUser
+
                 if (user != null) {
                     Log.d(
                         TAG,
@@ -243,6 +253,8 @@ class LoadImageFirstActivity : AppCompatActivity() {
                         cardPhotoKey = s3Key,
                         similarity = similarity
                     )
+
+
                     Log.d(TAG, "updateBiometricProfile enviado correctamente")
                 } else {
                     Log.e(TAG, "UserSession.currentUser == null")
