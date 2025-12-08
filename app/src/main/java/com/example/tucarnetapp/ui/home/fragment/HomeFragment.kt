@@ -101,8 +101,26 @@ class HomeFragment : Fragment() {
             tvCareer.text = " ${user.career}"
             tvStatus.text = " ${user.status}"
 
-            user.card_photo_key?.takeIf { it.isNotBlank() }?.let {
-                PhotoLoader.load(requireContext(), imgProfile, it)
+            val photoKey = user.card_photo_key
+
+            if (!photoKey.isNullOrBlank()) {
+
+                // Mostrar el overlay antes de iniciar la carga
+                loadingOverlay.visibility = View.VISIBLE
+
+                PhotoLoader.load(
+                    context = requireContext(),
+                    imageView = imgProfile,
+                    photoKey = photoKey
+                ) {
+                    // Este callback se ejecuta cuando Glide termina (éxito o error)
+                    loadingOverlay.visibility = View.GONE
+                }
+
+            } else {
+                // Si no hay foto, mostramos la imagen por defecto y aseguramos que el overlay no esté visible
+                imgProfile.setImageResource(R.drawable.no_image)
+                loadingOverlay.visibility = View.GONE
             }
         }
 
