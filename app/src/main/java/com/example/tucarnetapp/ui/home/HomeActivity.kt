@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.tucarnetapp.R
+import com.example.tucarnetapp.session.SessionManager
+import com.example.tucarnetapp.session.UserSession
 import com.example.tucarnetapp.ui.BaseActivity
 import com.example.tucarnetapp.ui.home.fragment.IdCardFragment
 import com.example.tucarnetapp.ui.home.fragment.HomeFragment
@@ -41,6 +43,9 @@ class HomeActivity : BaseActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
         SnackRouter.deliver(this)
+
+        // Restaurar UserSession
+        ensureUserSessionRestored()
 
         // Referencias a los elementos de la barra
         navHome = findViewById(R.id.navHome)
@@ -163,6 +168,56 @@ class HomeActivity : BaseActivity() {
                     .setDuration(100)
                     .start()
             }.start()
+    }
+
+    /**
+     * Restaura UserSession desde SharedPreferences si está vacía
+     * Esta es la línea de defensa principal
+     */
+    private fun ensureUserSessionRestored() {
+        if (UserSession.currentUser != null) {
+            Log.d(TAG, "✅ UserSession OK")
+            return
+        }
+
+        Log.w(TAG, "⚠️ UserSession vacía, restaurando...")
+
+        val sessionManager = SessionManager.getInstance(this)
+        val student = sessionManager.getStudent()
+
+        if (student != null) {
+            Log.d(TAG, "🔄 UserSession restaurada: ${student.name}")
+            UserSession.setUser(student)
+
+            // Notificar al fragment actual (si existe)
+            //notifyFragmentToRefresh()
+        } else {
+            Log.e(TAG, "❌ No hay sesión guardada, redirigir a login")
+            // Opcional: redirigir a login
+        }
+    }
+
+    /**
+     * Notifica al fragment actual para que se refresque
+     */
+    private fun notifyFragmentToRefresh() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+
+        when (currentFragment) {
+            is HomeFragment -> {
+                // El fragment se refrescará automáticamente en onResume
+                Log.d(TAG, "📢 HomeFragment será notificado")
+            }
+            is IdCardFragment -> {
+                Log.d(TAG, "📢 IdCardFragment será notificado")
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Verificar en cada resume por si acaso
+        ensureUserSessionRestored()
     }
 
     override fun onInternetAvailable() {
