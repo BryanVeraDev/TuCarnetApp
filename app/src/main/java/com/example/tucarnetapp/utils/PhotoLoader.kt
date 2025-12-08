@@ -27,7 +27,14 @@ object PhotoLoader {
             return
         }
 
-        val lifecycleOwner = context as? LifecycleOwner ?: return
+        val lifecycleOwner = context as? LifecycleOwner
+        if (lifecycleOwner == null) {
+            // No podemos lanzar corrutina segura asociada a un ciclo de vida,
+            // pero al menos no dejamos al caller bloqueado
+            imageView.setImageResource(R.drawable.no_image)
+            onFinished?.invoke()
+            return
+        }
 
         lifecycleOwner.lifecycleScope.launch {
             try {
