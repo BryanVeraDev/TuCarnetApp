@@ -276,7 +276,7 @@ class HomeScreenActivity : BaseActivity() {
                         // Guardar usuario en sesión
                         val sessionManager = SessionManager.getInstance(this@HomeScreenActivity)
                         sessionManager.saveStudent(student)
-                        //UserSession.currentUser = student
+                        UserSession.currentUser = student
 
                         // Tomar estado biométrico para redirigir
                         val userStatus = student.biometric_profile?.status
@@ -326,9 +326,10 @@ class HomeScreenActivity : BaseActivity() {
     private fun redirectUserBasedOnStatus(userStatus: String?, student: StudentResponse) {
         when (userStatus) {
             "APROBADO" -> {
-                // Usuario aprobado, ir a la pantalla principal
-                val intent = Intent(this, LoadingActivity::class.java)
-                intent.putExtra("firebaseId", student.email)
+                // Ir directo al HomeActivity
+                val intent = Intent(this, HomeActivity::class.java).apply {
+                    putExtra("open_section", "home")
+                }
                 startActivity(intent)
                 finish()
             }
