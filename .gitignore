@@ -13,6 +13,9 @@ app/google-services.json
 /build
 build/
 app/build/
+app/release/
+*.apk
+*.aab
 **/build/
 /captures
 .externalNativeBuild
