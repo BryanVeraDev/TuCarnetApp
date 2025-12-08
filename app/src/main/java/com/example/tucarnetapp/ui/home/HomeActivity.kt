@@ -1,5 +1,6 @@
 package com.example.tucarnetapp.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -35,6 +36,26 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Intentar desde memoria
+        var student = UserSession.currentUser
+
+        // 2. Si no está en memoria, intentar desde persistencia
+        if (student == null) {
+            val sessionManager = SessionManager.getInstance(this)
+            student = sessionManager.getStudent()
+
+            if (student != null) {
+                UserSession.currentUser = student
+            }
+        }
+
+        // 3. Si sigue siendo null → forzar login
+        if (student == null) {
+            startActivity(Intent(this, HomeScreenActivity::class.java))
+            finish()
+            return
+        }
 
         // Bloquea capturas de pantalla (Para el activity en general)
         setScreenshotsBlocked(true)
