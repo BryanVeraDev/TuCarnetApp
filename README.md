@@ -72,10 +72,10 @@ Conecta un dispositivo Android o usa un emulador, luego presiona **Run ▶** en 
 GitHub: [@BryanVeraDev](https://github.com/BryanVeraDev)
 
 **Omar Jaimes**  
-GitHub: [@BryanVeraDev](https://github.com/omarmolina23)
+GitHub: [@omarmolina23](https://github.com/omarmolina23)
 
 **Evelin Bermudez**  
-GitHub: [@BryanVeraDev](https://github.com/EvelinBer)
+GitHub: [@EvelinBer](https://github.com/EvelinBer)
 
 ## 📝 Notas
 
