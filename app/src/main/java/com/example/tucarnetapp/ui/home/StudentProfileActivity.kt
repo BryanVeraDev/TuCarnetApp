@@ -28,6 +28,7 @@ class StudentProfileActivity : BaseActivity() {
     private lateinit var textStatus: TextView
     private lateinit var btnLogout: MaterialButton
     private lateinit var infoContainer: View
+    private lateinit var loadingOverlay: View
 
     companion object {
         private const val TAG = "StudentProfile"
@@ -53,6 +54,7 @@ class StudentProfileActivity : BaseActivity() {
         textStatus = findViewById(R.id.textStatus)
         btnLogout = findViewById(R.id.btnLogout)
         infoContainer = findViewById(R.id.infoContainer)
+        loadingOverlay = findViewById(R.id.loading_overlay)
     }
 
     /**
@@ -128,11 +130,17 @@ class StudentProfileActivity : BaseActivity() {
         textCareer.text = " $career"
         textStatus.text = " ${formatStatus(status)}"
 
+        showLoading()
+
         // Cargar imagen del estudiante
         PhotoLoader.load(
             context = this,
             imageView = imgProfile,
-            photoKey = cardPhotoKey
+            photoKey = cardPhotoKey,
+            onFinished = {
+                // Ocultar loading cuando termine de cargar
+                hideLoading()
+            }
         )
     }
 
@@ -192,6 +200,15 @@ class StudentProfileActivity : BaseActivity() {
             e.printStackTrace()
             null
         }
+    }
+
+    // Funciones para manejar el loading overlay
+    private fun showLoading() {
+        loadingOverlay.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        loadingOverlay.visibility = View.GONE
     }
 
     private fun setupListeners() {
