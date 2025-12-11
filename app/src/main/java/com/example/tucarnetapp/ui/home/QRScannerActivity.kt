@@ -24,6 +24,7 @@ import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class QRScannerActivity : BaseActivity() {
 
@@ -173,7 +174,21 @@ class QRScannerActivity : BaseActivity() {
                 if (response.isSuccessful && response.body()?.valid == true) {
                     response.body()?.student?.let { handleValidQR(it) }
                 } else {
-                    handleInvalidQR("QR no válido o expirado")
+                    // Capturar el mensaje de error específico
+                    val errorMessage = try {
+                        JSONObject(response.errorBody()?.string() ?: "{}")
+                            .optString("message", "QR no válido o expirado")
+                    } catch (e: Exception) {
+                        "QR no válido o expirado"
+                    }
+
+                    // Si es un error de "no matriculado", redirigir a StudentProfile
+                    if (errorMessage.contains("no matriculado", ignoreCase = true)) {
+                        handleNotEnrolledStudent(errorMessage)
+                    } else {
+                        // Para otros errores, mostrar Snackbar y reintentar
+                        handleInvalidQR(errorMessage)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error validando QR", e)
@@ -203,6 +218,29 @@ class QRScannerActivity : BaseActivity() {
                 putExtra("STUDENT_TYPE", student.student_type)
                 putExtra("CARD_PHOTO_KEY", student.card_photo_key)
                 putExtra("IS_VALIDATED", true)
+            }
+        )
+
+        finish()
+    }
+
+    /**
+     * Redirige a StudentProfile para mostrar error de estudiante no matriculado
+     */
+    private fun handleNotEnrolledStudent(errorMessage: String) {
+        showSnack(
+            "⚠️ $errorMessage",
+            Snackbar.LENGTH_SHORT,
+            false,
+            R.color.ufps_informacion_claro,
+            R.color.ufps_error_principal
+        )
+
+        // Redirigir a StudentProfileActivity SIN datos del estudiante
+        startActivity(
+            Intent(this, StudentProfileActivity::class.java).apply {
+                putExtra("IS_VALIDATED", false)
+                putExtra("VALIDATION_REASON", errorMessage)
             }
         )
 
