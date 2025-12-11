@@ -71,6 +71,12 @@ Conecta un dispositivo Android o usa un emulador, luego presiona **Run ▶** en 
 **Bryan Vera**  
 GitHub: [@BryanVeraDev](https://github.com/BryanVeraDev)
 
+**Omar Jaimes**  
+GitHub: [@BryanVeraDev](https://github.com/omarmolina23)
+
+**Evelin Bermudez**  
+GitHub: [@BryanVeraDev](https://github.com/EvelinBer)
+
 ## 📝 Notas
 
 - Esta es una **versión Beta (0.1.0)** para pruebas internas
@@ -81,4 +87,3 @@ GitHub: [@BryanVeraDev](https://github.com/BryanVeraDev)
 
 Proyecto de uso/desarrollo académico exclusivo para la comunidad UFPS.  
 ```
----
