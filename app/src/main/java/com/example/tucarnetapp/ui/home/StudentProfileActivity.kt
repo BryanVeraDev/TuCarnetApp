@@ -63,7 +63,9 @@ class StudentProfileActivity : BaseActivity() {
         val isValidated = intent.getBooleanExtra("IS_VALIDATED", false)
 
         if (!isValidated) {
-            showInvalidStudent("No se recibieron datos de validación")
+            // Extraer datos del Intent
+            val validationReason = intent.getStringExtra("VALIDATION_REASON")
+            showInvalidStudent(validationReason ?: "Estudiante no matriculado")
             return
         }
 
